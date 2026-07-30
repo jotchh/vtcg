@@ -17,9 +17,13 @@ npm i
 create a `env.sjon` file in the root dir
 ```json
 {
-    "user": "yourUsername",
-    "password": "yourPassword",
-    "database": "vtcg"
+    "pool": {
+        "host": "localhost",
+        "user": "yourUsername",
+        "password": "yourPassword",
+        "database": "vtcg",
+        "port": 5432
+    }
 }
 ```
 

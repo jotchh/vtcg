@@ -13,7 +13,29 @@ cd vtcg
 npm i
 ```
 
-3. **Start development server**
+3. **Set up environment variables**
+create a `env.sjon` file in the root dir
+```json
+{
+    "user": "yourUsername",
+    "password": "yourPassword",
+    "database": "vtcg"
+}
+```
+
+4. **Create the PostgreSQL database**
+Run the setup script:
+```bash
+psql -U postgres -f setup.sql
+```
+
+Or, if you've already created the database:
+```bash
+psql -U USERNAME -d vtcg -f setup.sql
+```
+
+5. **Start development server**
 ```bash
 npm run start
 ```
+

@@ -1,0 +1,120 @@
+CREATE DATABASE vtcg;
+-- Connect to the database before running the rest
+\c vtcg
+
+-- USERS
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(25),
+    password_hash VARCHAR(255),
+    email VARCHAR(100),
+    bio VARCHAR(160),
+    packs_opened INT DEFAULT 0,
+    cards_owned INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CARDS
+CREATE TABLE cards (
+    id SERIAL PRIMARY KEY,
+
+    api_card_id VARCHAR(100) UNIQUE,
+    game VARCHAR(50),
+    set_name VARCHAR(100),
+
+    name VARCHAR(255) NOT NULL,
+    rarity VARCHAR(1), -- M/R/U/C
+    card_number VARCHAR(50),
+
+    img_url TEXT,
+    description TEXT
+);
+
+-- PACK HISTORY
+CREATE TABLE pack_history (
+    id SERIAL PRIMARY KEY,
+
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+
+    game VARCHAR(50),
+    set_name VARCHAR(100),
+
+    opened_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- USER CARDS
+CREATE TABLE user_cards (
+    id SERIAL PRIMARY KEY,
+
+    card_id INT REFERENCES cards(id),
+    user_id INT REFERENCES users(id),
+    pack_history_id INT REFERENCES pack_history(id),
+
+    acquired_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    cnd VARCHAR(3) NOT NULL -- NM/LP/MP/HP/DMG
+);
+
+-- FRIENDS
+CREATE TABLE friends (
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    friend_id INT REFERENCES users(id) ON DELETE CASCADE,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    PRIMARY KEY (user_id, friend_id)
+);
+
+-- MESSAGES
+CREATE TABLE messages (
+    id SERIAL PRIMARY KEY,
+
+    sender_id INT REFERENCES users(id) ON DELETE CASCADE,
+    receiver_id INT REFERENCES users(id) ON DELETE CASCADE,
+
+    message TEXT NOT NULL,
+
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    read BOOLEAN DEFAULT FALSE
+);
+
+-- TRADES
+CREATE TABLE trades (
+    id SERIAL PRIMARY KEY,
+
+    sender_id INT REFERENCES users(id),
+    receiver_id INT REFERENCES users(id),
+
+    status VARCHAR(20) DEFAULT 'PENDING',
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    completed_at TIMESTAMP
+);
+
+-- TRADE CARDS
+CREATE TABLE trade_cards (
+    id SERIAL PRIMARY KEY,
+
+    trade_id INT REFERENCES trades(id) ON DELETE CASCADE,
+    user_card_id INT REFERENCES user_cards(id),
+
+    offered_by INT REFERENCES users(id)
+);
+
+-- DECKS
+CREATE TABLE decks (
+    id SERIAL PRIMARY KEY,
+
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+
+    name VARCHAR(100),
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- DECK CARDS
+CREATE TABLE deck_cards (
+    deck_id INT REFERENCES decks(id) ON DELETE CASCADE,
+    user_card_id INT REFERENCES user_cards(id),
+
+    PRIMARY KEY (deck_id, user_card_id)
+);

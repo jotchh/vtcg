@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        tr, th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }   
+    </style>
+</head>
+<body>
+    <h1>VTCG Search</h1>
+    <p>Search for cards in the database.</p>
+
+    <form id="search-form">
+        <div>
+            <label for="search">Search</label>
+            <input type="text" id="search" placeholder="e.g. something something">
+        </div>
+        <button type="submit" id="submit">Search</button>
+    </form>
+
+    <hr>
+    <p id="query-message"></p>
+    <table id="search-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Set</th>
+                <th>Rarity</th>
+                <th>Card Art</th>
+            </tr>
+        </thead>
+        <tbody id="search-results"></tbody>
+    </table>
+    
+    <div id="pagination">
+        <button id="prev-page">Previous</button>
+        <span id="page-info"></span>
+        <button id="next-page">Next</button>
+    </div>
+</body>
+<script src="search.js"></script>
+</html>

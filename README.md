@@ -23,6 +23,18 @@ create a `env.sjon` file in the root dir
         "password": "yourPassword",
         "database": "vtcg",
         "port": 5432
+    },
+    "api": {
+        "baseUrl": "https://openapi.tcgtracking.com/v1",
+        "games": [
+            "Magic: The Gathering"
+        ],
+        "rarityMap": {
+            "Common": "C",
+            "Uncommon": "U",
+            "Rare": "R",
+            "Mythic Rare": "M"
+        }
     }
 }
 ```

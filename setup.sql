@@ -27,7 +27,6 @@ CREATE TABLE cards (
     card_number VARCHAR(50),
 
     img_url TEXT,
-    description TEXT
 );
 
 -- PACK HISTORY

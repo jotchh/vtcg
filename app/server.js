@@ -16,6 +16,19 @@ const BASE_URL = env.api.baseUrl;
 const GAMES = env.api.games;
 const RARITY_MAP = env.api.rarityMap;
 
+async function shouldSync(){
+  let res = await pool.query("SELECT value FROM metadata WHERE key = 'last_sync'");
+  
+  if (res.rows.length === 0) {
+    return true; 
+  }
+
+  let lastSync = new Date(res.rows[0].value);
+  let now = new Date();
+  let sevenDays = 7 * 24 * 60 * 60 * 1000;
+  return now - lastSync >= sevenDays;
+}
+
 async function syncDatabase(){
   let {data: categoryData} = await axios.get(`${BASE_URL}/categories`);
 
@@ -34,18 +47,28 @@ async function syncDatabase(){
             rarity = RARITY_MAP[card.rarity] ?? null;
             values = [card.id, game.name, set.name, card.name, rarity, card.number, card.image_url];
             
-            await pool.query(query, values);
+            pool.query(query, values);
           }
-        } catch (err) {
+        } catch (error) {
           // If the error is a 404, it means the set has no card, so we can ignore it and continue to the next set.
-          if (err.response?.status === 404) {
+          if (error.response?.status === 404) {
             continue;
           }
-          throw err;
+          throw error;
         }  
       }
     }
-  } 
+  }
+  
+  let metdataQuery = "INSERT INTO metadata (key, value) VALUES ('last_sync', $1) ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value"
+  pool.query(metdataQuery, [new Date().toISOString()])
+    .then(result => {
+      console.log(result);
+      console.log("Done!")
+    })
+    .catch(error => {
+      console.error("Error executing query:", err.stack);
+    });
 }
 
 app.get("/search", (req, res) => {
@@ -58,21 +81,21 @@ app.get("/search", (req, res) => {
     query += " AND (name ILIKE $1 OR set_name ILIKE $1)";
     values = [`%${search}%`];
   }
-
-  console.log(`Executing query: ${query} with values: ${values}`);
   
   pool.query(query, values)
     .then(result => {
       res.status(200).json(result.rows);
     })
-    .catch(err => {
-      console.error("Error executing query:", err.stack);
+    .catch(error => {
+      console.error("Error executing query:", error.stack);
       res.status(500).send("Error executing query");
     });
 });
 
-app.listen(port, hostname, () => {
+app.listen(port, hostname, async () => {
   console.log(`http://${hostname}:${port}`);
-  // TO DO: UNCOMMENT THIS LINE TO SYNC DATABASE WHEN SERVER STARTS
-  //syncDatabase();
+  if (await shouldSync()){
+    console.log("Syncing database...")
+    await syncDatabase();
+  } 
 });

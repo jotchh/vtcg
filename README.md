@@ -2,18 +2,12 @@
 VTCG (Virtual Trading Card Game) is an online-platform that allows users to collect, trade, and display virtual trading cards from popular TCGs. Users can create accounts, open virtual card packs, manager their collections, build decks, and trade cards with other users.
 
 ### Development setup
-1. **Clone the repository**
-```bash
-git clone https://github.com/yourusername/vtcg.git
-cd vtcg
-```
-
-2. **Install dependencies**
+1. **Install dependencies**
 ```bash
 npm i
 ```
 
-3. **Set up environment variables**
+2. **Set up environment variables**
 create a `env.sjon` file in the root dir
 ```json
 {
@@ -39,18 +33,18 @@ create a `env.sjon` file in the root dir
 }
 ```
 
-4. **Create the PostgreSQL database**
+3. **Create the PostgreSQL database**
 Run the setup script:
 ```bash
-psql -U postgres -f setup.sql
+psql -U YourUsername -f setup.sql
 ```
 
 Or, if you've already created the database:
 ```bash
-psql -U USERNAME -d vtcg -f setup.sql
+psql -U YourUsername -d vtcg -f setup.sql
 ```
 
-5. **Start development server**
+4. **Start development server**
 ```bash
 npm run start
 ```

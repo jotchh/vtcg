@@ -1,0 +1,1 @@
+// Trade page frontend logic

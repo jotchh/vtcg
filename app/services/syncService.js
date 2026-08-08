@@ -28,14 +28,17 @@ module.exports = function(pool, env) {
         
         for(let set of setData.sets){
             try {
-            const { data: cardData } = await axios.get(`${BASE_URL}/${game.id}/sets/${set.id}/cards`);
+            let { data: cardData } = await axios.get(`${BASE_URL}/${game.id}/sets/${set.id}/cards`);
             
-            for (const card of cardData.products) {
-                query = `INSERT INTO cards (api_card_id, game, set_name, name, rarity, card_number, img_url) VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT (api_card_id) DO NOTHING`;
+            for (let card of cardData.products) {
+                let query = `INSERT INTO cards (api_card_id, game, set_name, name, rarity, card_number, ext_data, img_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) ON CONFLICT (api_card_id) DO NOTHING`;
                 
-                rarity = RARITY_MAP[card.rarity] ?? null;
-                values = [card.id, game.name, set.name, card.name, rarity, card.number, card.image_url];
-                
+                let rarity = RARITY_MAP[card.rarity] ?? null;
+                console.log(card.ext_data);
+            
+                let ext_data = card.ext_data ? card.ext_data : null;
+                let values = [card.id, game.name, set.name, card.name, rarity, card.number, ext_data, card.image_url];
+                console.log(values);
                 pool.query(query, values);
             }
             } catch (error) {

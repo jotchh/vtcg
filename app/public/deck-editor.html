@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deck - VTCG</title>
+    <link rel="stylesheet" href="css/decks.css">
+</head>
+<body>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="decks.html">Decks</a>
+        <a href="wishlist.html">Wishlist</a>
+    </nav>
+
+    <div class="top-bar">
+        <div>
+            <h1 id="deck-name">Loading...</h1>
+            <span id="deck-type" class="hint"></span>
+        </div>
+        <div id="mode-actions"></div>
+    </div>
+
+    <p id="status-message" class="hint"></p>
+
+    <div id="add-card-section" style="display:none;">
+        <button id="add-card-btn">+ Add Card</button>
+    </div>
+
+    <ul class="card-list" id="card-list"></ul>
+</body>
+<script src="js/deck-editor.js"></script>
+</html>

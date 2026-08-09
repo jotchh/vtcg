@@ -2,7 +2,6 @@ CREATE DATABASE vtcg;
 -- Connect to the database before running the rest
 \c vtcg
 
--- USERS
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(25),
@@ -14,7 +13,6 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- CARDS
 CREATE TABLE cards (
     id SERIAL PRIMARY KEY,
 
@@ -27,10 +25,8 @@ CREATE TABLE cards (
     card_number VARCHAR(50),
 
     img_url TEXT,
-    description TEXT
 );
 
--- PACK HISTORY
 CREATE TABLE pack_history (
     id SERIAL PRIMARY KEY,
 
@@ -42,7 +38,6 @@ CREATE TABLE pack_history (
     opened_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- USER CARDS
 CREATE TABLE user_cards (
     id SERIAL PRIMARY KEY,
 
@@ -54,7 +49,6 @@ CREATE TABLE user_cards (
     cnd VARCHAR(3) NOT NULL -- NM/LP/MP/HP/DMG
 );
 
--- FRIENDS
 CREATE TABLE friends (
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
     friend_id INT REFERENCES users(id) ON DELETE CASCADE,
@@ -64,7 +58,6 @@ CREATE TABLE friends (
     PRIMARY KEY (user_id, friend_id)
 );
 
--- MESSAGES
 CREATE TABLE messages (
     id SERIAL PRIMARY KEY,
 
@@ -77,7 +70,6 @@ CREATE TABLE messages (
     read BOOLEAN DEFAULT FALSE
 );
 
--- TRADES
 CREATE TABLE trades (
     id SERIAL PRIMARY KEY,
 
@@ -90,7 +82,6 @@ CREATE TABLE trades (
     completed_at TIMESTAMP
 );
 
--- TRADE CARDS
 CREATE TABLE trade_cards (
     id SERIAL PRIMARY KEY,
 
@@ -100,7 +91,6 @@ CREATE TABLE trade_cards (
     offered_by INT REFERENCES users(id)
 );
 
--- DECKS
 CREATE TABLE decks (
     id SERIAL PRIMARY KEY,
 
@@ -111,10 +101,14 @@ CREATE TABLE decks (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- DECK CARDS
 CREATE TABLE deck_cards (
     deck_id INT REFERENCES decks(id) ON DELETE CASCADE,
     user_card_id INT REFERENCES user_cards(id),
 
     PRIMARY KEY (deck_id, user_card_id)
+);
+
+CREATE TABLE metadata (
+    key TEXT PRIMARY KEY,
+    value TEXT
 );

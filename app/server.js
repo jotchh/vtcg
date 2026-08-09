@@ -12,6 +12,16 @@ pool.connect().then(() => {
   console.log("Connected to database");
 });
 
-app.listen(port, hostname, () => {
+let createSyncService = require("./services/syncService");
+let searchRoutes = require("./routes/searchRoutes");
+
+let syncService = createSyncService(pool, env);
+app.use("/search", searchRoutes(pool));
+
+app.listen(port, hostname, async () => {
   console.log(`http://${hostname}:${port}`);
+  if (await syncService.shouldSync()){
+    console.log("Syncing database...")
+    await syncService.syncDatabase();
+  } 
 });

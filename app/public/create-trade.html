@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Trade</title>
+
+    <link rel="stylesheet" href="css/trade.css">
+    <script src="js/create-trade.js" defer></script>
+</head>
+
+<body>
+    <!-- Navigation Bar-->
+    <header>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="cards.html">Cards</a>
+            <a href="collection.html">Collection</a>
+            <a href="trade-dashboard.html">Trades</a>
+            <a href="profile.html">Profile</a>
+        </nav>
+    </header>
+
+    <main>
+        <!--# TRADE HEADER #-->
+        <section class="trade-header">
+            <h1>Create Trade</h1>
+            <!-- Filler username -->
+            <p>Trading with:<strong id="trade-partner-name">Loading...</strong></p>
+        </section>
+
+        <!--# CARD SELECTION #-->
+        <section class="trade-card-selection">
+            
+            <!-- YOUR CARDS -->
+            <div class="collection-section">
+                <h2>Your Cards</h2>
+                <input id="your-card-search" type="search" placeholder="Search your cards...">
+                
+                <div class="card-slider-container">
+                    <button id="your-scroll-left" type="button" class="scroll-button">&lt;</button>
+                    
+                    <!-- Add user cards here -->
+                    <div id="your-card-list" class="card-slider"></div>
+
+                    <button id="your-scroll-right" type="button" class="scroll-button">&gt;</button>
+                </div>
+            </div>
+
+            <!--# OTHER USER'S CARDS #-->
+            <div class="collection-section">
+                <h2>
+                    <span id="partner-collection-name">User</span>'s Tradable Cards
+                </h2>
+                <input id="their-card-search" type="search" placeholder="Search their tradable cards...">
+
+                <div class="card-slider-container">
+                    <button id="their-scroll-left" type="button" class="scroll-button">&lt;</button>
+
+                    <div id="their-card-list" class="card-slider">
+                        <!-- Add partner cards here -->
+                    </div>
+
+                    <button id="their-scroll-right" type="button" class="scroll-button">&gt;</button>
+                </div>
+            </div>
+        </section>
+        
+        <!--# TRADE SUMMARY #-->
+        <section class="trade-summary">
+            <h2>Trade Summary</h2>
+
+            <div class="trade-summary-columns">
+                <div class="offer-summary">
+                    <h3>You Offer</h3>
+                    <div id="offered-cards">
+                        <p class="empty-message">No cards selected.</p>
+                    </div>
+                </div>
+
+                <div class="request-summary">
+                    <h3>You Request</h3>
+                    <div id="requested-cards">
+                        <p class="empty-message">No cards selected.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!--# TRADE ACTIONS #-->
+        <section class="trade-actions">
+            <p id="trade-message" class="trade-message"></p>
+            <a href="trade-dashboard.html">Cancel</a>
+
+            <button id="submit-trade" type="button">Submit Trade</button>
+        </section>
+    </main>
+</body>
+</html>

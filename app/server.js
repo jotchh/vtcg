@@ -13,10 +13,13 @@ pool.connect().then(() => {
 });
 
 let createSyncService = require("./services/syncService");
-let searchRoutes = require("./routes/searchRoutes");
-
 let syncService = createSyncService(pool, env);
+
+let searchRoutes = require("./routes/searchRoutes");
+let cardRoutes = require("./routes/cardRoutes");
+
 app.use("/search", searchRoutes(pool));
+app.use("/card", cardRoutes(pool));
 
 app.listen(port, hostname, async () => {
   console.log(`http://${hostname}:${port}`);

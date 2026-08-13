@@ -2,42 +2,46 @@ const express = require("express");
 const router = express.Router();
 
 module.exports = function(pool) {
-  router.get("/all/product", async (req, res) => {
-      try {
-          const search = req.query.q || "";
-          const pageNumber = Math.max(parseInt(req.query.page) || 1, 1);
+  router.get("/product", async (req, res) => {
+      try { 
+        let search = req.query.q || "";
+        let game = req.query.game || "";
+        
+        let pageNumber = Math.max(parseInt(req.query.page) || 1, 1);
+        let pageSize = 20;
+        let offset = (pageNumber - 1) * pageSize;
 
-          const PAGE_SIZE = 20;
-          const offset = (pageNumber - 1) * PAGE_SIZE;
+        let conditions = [];
+        let values = [];
 
-          let whereClause = "";
-          let values = [];
+        if (search) {
+            conditions.push(`name ILIKE $${values.length + 1} OR set_name ILIKE $${values.length + 1}`);
+            values.push(`%${search}%`);
+        }
 
-          if (search) {
-              whereClause = `WHERE name ILIKE $1 OR set_name ILIKE $1`;
-              values.push(`%${search}%`);
-          }
+        if (game) {
+          conditions.push(`game = $${values.length + 1}`);
+          values.push(`${game}`);
+        }
 
-          const countQuery = `SELECT COUNT(*) AS total FROM cards ${whereClause}`;
+        let query = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+        console.log(query);
+        let countQuery = `SELECT COUNT(*) AS total FROM cards ${query}`;
 
-          const countResult = await pool.query(countQuery, values);
-          const total = parseInt(countResult.rows[0].total, 10);
+        let countResult = await pool.query(countQuery, values);
+        let total = parseInt(countResult.rows[0].total, 10);
 
-          const dataQuery = `SELECT * FROM cards ${whereClause} ORDER BY id LIMIT $${values.length + 1} OFFSET $${values.length + 2}`;
+        let dataQuery = `SELECT * FROM cards ${query} ORDER BY id LIMIT $${values.length + 1} OFFSET $${values.length + 2}`;
+        let dataValues = [...values, pageSize, offset];
 
-          const dataValues = [...values, PAGE_SIZE, offset];
+        let result = await pool.query(dataQuery, dataValues);
 
-          const result = await pool.query(dataQuery, dataValues);
-
-          const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-          res.status(200).json({ cards: result.rows, page: pageNumber, total: total, totalPages: totalPages});
+        let totalPages = Math.max(1, Math.ceil(total / pageSize));
+        res.status(200).json({ cards: result.rows, page: pageNumber, total: total, totalPages: totalPages});
       } catch (error) {
           console.error("Error executing query:", error);
           res.status(500).json({error: "Error executing query"});
       }
-    });
-
-    router.get("/magic/product", (req, res) => {
     });
 
     return router;

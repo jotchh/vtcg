@@ -1,122 +1,164 @@
-//fake data will wire up later
-
 const DECK_TYPES = ["TRUE", "WISHLIST"];
 
-let nextDeckId = 3;
-let decks = [
-  {
-    id: 1,
-    userId: 1,
-    name: "Mono Red Aggro",
-    deckType: "TRUE",
-    createdAt: new Date().toISOString(),
-    cards: [
-      { cardId: 101, name: "Lightning Bolt", set_name: "Alpha", rarity: "C", img_url: "", quantity: 4 },
-      { cardId: 102, name: "Goblin Guide", set_name: "Zendikar", rarity: "R", img_url: "", quantity: 4 },
-    ],
-  },
-  {
-    id: 2,
-    userId: 1,
-    name: "Dream Standard Build",
-    deckType: "WISHLIST",
-    createdAt: new Date().toISOString(),
-    cards: [
-      { cardId: 201, name: "Teferi, Time Raveler", set_name: "War of the Spark", rarity: "M", img_url: "", quantity: 1 },
-    ],
-  },
-];
-
-let wishlistsByUser = {
-  1: [],
-};
-
-function listDecksForUser(userId) {
-  return decks.filter(d => d.userId === userId);
-}
-
-function getDeck(deckId, userId) {
-  return decks.find(d => d.id === deckId && d.userId === userId) || null;
-}
-
-function createDeck(userId, name, deckType) {
-  if (!DECK_TYPES.includes(deckType)) {
-    throw new Error(`deckType must be one of ${DECK_TYPES.join(", ")}`);
-  }
-  let deck = {
-    id: nextDeckId++,
-    userId,
-    name,
-    deckType,
-    createdAt: new Date().toISOString(),
-    cards: [],
+// Shapes a deck row + its deck_cards rows into the API response the frontend expects:
+// { id, userId, name, deckType, createdAt, cards: [{ cardId, name, set_name, rarity, img_url, quantity, userCardId }] }
+function toDeckDTO(deckRow, cardRows) {
+  return {
+    id: deckRow.id,
+    userId: deckRow.user_id,
+    name: deckRow.name,
+    deckType: deckRow.deck_type,
+    createdAt: deckRow.created_at,
+    cards: cardRows.map(c => ({
+      cardId: c.card_id,
+      userCardId: c.user_card_id,
+      name: c.name,
+      set_name: c.set_name,
+      rarity: c.rarity,
+      img_url: c.img_url,
+      quantity: c.quantity,
+    })),
   };
-  decks.push(deck);
-  return deck;
 }
 
-function deleteDeck(deckId, userId) {
-  let index = decks.findIndex(d => d.id === deckId && d.userId === userId);
-  if (index === -1) return false;
-  decks.splice(index, 1);
-  return true;
+async function getDeckCardRows(pool, deckId) {
+  let result = await pool.query(
+    `SELECT
+       COALESCE(dc.card_id, uc.card_id) AS card_id,
+       dc.user_card_id, dc.quantity, c.name, c.set_name, c.rarity, c.img_url
+     FROM deck_cards dc
+     LEFT JOIN user_cards uc ON uc.id = dc.user_card_id
+     JOIN cards c ON c.id = COALESCE(dc.card_id, uc.card_id)
+     WHERE dc.deck_id = $1
+     ORDER BY dc.id`,
+    [deckId]
+  );
+  return result.rows;
 }
 
-function addCardToDeck(deckId, userId, card) {
-  let deck = getDeck(deckId, userId);
-  if (!deck) return null;
-
-  // TODO: true decks should only allow cards user actually owns, need collections API for that
-  deck.cards.push(card);
-  return deck;
-}
-
-function removeCardFromDeck(deckId, userId, cardId) {
-  let deck = getDeck(deckId, userId);
-  if (!deck) return null;
-  deck.cards = deck.cards.filter(c => c.cardId !== cardId);
-  return deck;
-}
-
-// TODO: figure out how to tell owned vs not-owned cards once collections exists
-// for now just dumps every card in the deck into the wishlist, not correct
-function syncWishlistDeckToWishlist(deckId, userId) {
-  let deck = getDeck(deckId, userId);
-  if (!deck || deck.deckType !== "WISHLIST") return null;
-
-  let wishlist = wishlistsByUser[userId] || (wishlistsByUser[userId] = []);
-  for (let card of deck.cards) {
-    wishlist.push(card);
+function makeDeckService(pool) {
+  async function findDeckRow(deckId, userId) {
+    let result = await pool.query(
+      "SELECT * FROM decks WHERE id = $1 AND user_id = $2",
+      [deckId, userId]
+    );
+    return result.rows[0] || null;
   }
-  return wishlist;
+
+  async function listDecksForUser(userId) {
+    let result = await pool.query(
+      "SELECT * FROM decks WHERE user_id = $1 ORDER BY created_at DESC",
+      [userId]
+    );
+    return Promise.all(
+      result.rows.map(async deckRow => toDeckDTO(deckRow, await getDeckCardRows(pool, deckRow.id)))
+    );
+  }
+
+  async function getDeck(deckId, userId) {
+    let deckRow = await findDeckRow(deckId, userId);
+    if (!deckRow) return null;
+    return toDeckDTO(deckRow, await getDeckCardRows(pool, deckId));
+  }
+
+  async function createDeck(userId, name, deckType) {
+    if (!DECK_TYPES.includes(deckType)) {
+      throw new Error(`deckType must be one of ${DECK_TYPES.join(", ")}`);
+    }
+    let result = await pool.query(
+      "INSERT INTO decks (user_id, name, deck_type) VALUES ($1, $2, $3) RETURNING *",
+      [userId, name, deckType]
+    );
+    return toDeckDTO(result.rows[0], []);
+  }
+
+  async function deleteDeck(deckId, userId) {
+    let result = await pool.query(
+      "DELETE FROM decks WHERE id = $1 AND user_id = $2 RETURNING id",
+      [deckId, userId]
+    );
+    return result.rows.length > 0;
+  }
+
+  // TRUE decks add a specific owned copy (userCardId); WISHLIST decks add a card by id + quantity.
+  async function addCardToDeck(deckId, userId, card) {
+    let deckRow = await findDeckRow(deckId, userId);
+    if (!deckRow) return null;
+
+    if (deckRow.deck_type === "WISHLIST") {
+      await pool.query(
+        "INSERT INTO deck_cards (deck_id, card_id, quantity) VALUES ($1, $2, $3)",
+        [deckId, card.cardId, card.quantity || 1]
+      );
+    } else {
+      await pool.query(
+        "INSERT INTO deck_cards (deck_id, user_card_id, quantity) VALUES ($1, $2, $3)",
+        [deckId, card.userCardId, card.quantity || 1]
+      );
+    }
+
+    return toDeckDTO(deckRow, await getDeckCardRows(pool, deckId));
+  }
+
+  async function removeCardFromDeck(deckId, userId, cardId) {
+    let deckRow = await findDeckRow(deckId, userId);
+    if (!deckRow) return null;
+
+    if (deckRow.deck_type === "WISHLIST") {
+      await pool.query("DELETE FROM deck_cards WHERE deck_id = $1 AND card_id = $2", [deckId, cardId]);
+    } else {
+      await pool.query(
+        "DELETE FROM deck_cards WHERE deck_id = $1 AND user_card_id IN (SELECT id FROM user_cards WHERE card_id = $2)",
+        [deckId, cardId]
+      );
+    }
+
+    return toDeckDTO(deckRow, await getDeckCardRows(pool, deckId));
+  }
+
+  // The wishlist is just the user's single WISHLIST-type deck, created on first use.
+  // These three functions delegate to the deck functions above and unwrap `.cards`.
+  async function getOrCreateWishlistDeck(userId) {
+    let result = await pool.query(
+      "SELECT * FROM decks WHERE user_id = $1 AND deck_type = 'WISHLIST' ORDER BY created_at ASC LIMIT 1",
+      [userId]
+    );
+    if (result.rows.length > 0) return result.rows[0];
+
+    let created = await pool.query(
+      "INSERT INTO decks (user_id, name, deck_type) VALUES ($1, $2, 'WISHLIST') RETURNING *",
+      [userId, "Wishlist"]
+    );
+    return created.rows[0];
+  }
+
+  async function listWishlistForUser(userId) {
+    let deck = await getOrCreateWishlistDeck(userId);
+    return (await getDeck(deck.id, userId)).cards;
+  }
+
+  async function addCardToWishlist(userId, card) {
+    let deck = await getOrCreateWishlistDeck(userId);
+    return (await addCardToDeck(deck.id, userId, card)).cards;
+  }
+
+  async function removeCardFromWishlist(userId, cardId) {
+    let deck = await getOrCreateWishlistDeck(userId);
+    return (await removeCardFromDeck(deck.id, userId, cardId)).cards;
+  }
+
+  return {
+    DECK_TYPES,
+    listDecksForUser,
+    getDeck,
+    createDeck,
+    deleteDeck,
+    addCardToDeck,
+    removeCardFromDeck,
+    listWishlistForUser,
+    addCardToWishlist,
+    removeCardFromWishlist,
+  };
 }
 
-function listWishlistForUser(userId) {
-  return wishlistsByUser[userId] || [];
-}
-
-function addCardToWishlist(userId, card) {
-  let wishlist = wishlistsByUser[userId] || (wishlistsByUser[userId] = []);
-  wishlist.push(card);
-  return wishlist;
-}
-
-function removeCardFromWishlist(userId, cardId) {
-  let wishlist = wishlistsByUser[userId] || [];
-  wishlistsByUser[userId] = wishlist.filter(c => c.cardId !== cardId);
-  return wishlistsByUser[userId];
-}
-
-module.exports = {
-  DECK_TYPES,
-  listDecksForUser,
-  getDeck,
-  createDeck,
-  deleteDeck,
-  addCardToDeck,
-  removeCardFromDeck,
-  syncWishlistDeckToWishlist,
-  listWishlistForUser,
-  addCardToWishlist,
-  removeCardFromWishlist,
-};
+module.exports = makeDeckService;

@@ -8,6 +8,7 @@ let modeActions = document.getElementById("mode-actions");
 let statusMessage = document.getElementById("status-message");
 let addCardSection = document.getElementById("add-card-section");
 let addCardBtn = document.getElementById("add-card-btn");
+let cardPickerEl = document.getElementById("card-picker");
 let cardList = document.getElementById("card-list");
 
 let currentDeck = null;
@@ -46,7 +47,9 @@ function renderModeActions() {
     } else {
         let doneBtn = document.createElement("button");
         doneBtn.textContent = "Done Editing";
-        doneBtn.addEventListener("click", finishEditing);
+        doneBtn.addEventListener("click", () => {
+            window.location.href = `deck-editor.html?id=${deckId}&mode=view`;
+        });
         modeActions.appendChild(doneBtn);
     }
 }
@@ -65,29 +68,7 @@ function renderCards() {
     }
 
     for (let card of currentDeck.cards) {
-        let row = document.createElement("li");
-        row.className = "card-row";
-
-        let left = document.createElement("div");
-        if (card.img_url) {
-            let img = document.createElement("img");
-            img.src = card.img_url;
-            img.alt = card.name;
-            left.appendChild(img);
-        }
-        let label = document.createElement("span");
-        label.textContent = `${card.name} x${card.quantity}${card.set_name ? " (" + card.set_name + ")" : ""}`;
-        left.appendChild(label);
-        row.appendChild(left);
-
-        if (mode === "edit") {
-            let removeBtn = document.createElement("button");
-            removeBtn.textContent = "Remove";
-            removeBtn.addEventListener("click", () => removeCard(card.cardId));
-            row.appendChild(removeBtn);
-        }
-
-        cardList.appendChild(row);
+        cardList.appendChild(renderCardRow(card, mode === "edit" ? removeCard : null));
     }
 }
 
@@ -103,21 +84,34 @@ function removeCard(cardId) {
         });
 }
 
-// TODO: wire up to card search/collections once that exists, no picker yet
-addCardBtn.addEventListener("click", () => {
-    statusMessage.textContent = "Card picker not built yet.";
-});
-
-// wishlist decks dump their cards into the wishlist when done editing
-function finishEditing() {
-    fetch(`/api/decks/${deckId}/finish-editing`, { method: "POST" })
+function addCardToDeck(card) {
+    fetch(`/api/decks/${deckId}/cards`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cardId: card.id, quantity: 1 }),
+    })
         .then(response => response.json())
-        .then(() => {
-            window.location.href = `deck-editor.html?id=${deckId}&mode=view`;
+        .then(deck => {
+            currentDeck = deck;
+            cardPickerEl.style.display = "none";
+            statusMessage.textContent = "";
+            renderCards();
         })
         .catch(error => {
-            console.error("Error finishing edit:", error);
+            statusMessage.textContent = "Failed to add card.";
+            console.error("Error adding card:", error);
         });
 }
+
+addCardBtn.addEventListener("click", () => {
+    if (currentDeck.deckType !== "WISHLIST") {
+        // TODO: TRUE decks should pick from the user's owned collection (user_cards),
+        // but no "my collection" endpoint exists yet on any branch.
+        statusMessage.textContent = "Adding cards to true decks needs a collection API - not built yet.";
+        return;
+    }
+
+    toggleCardPicker(cardPickerEl, addCardToDeck);
+});
 
 loadDeck();

@@ -1,15 +1,18 @@
+
 CREATE DATABASE vtcg;
 -- Connect to the database before running the rest
-\c vtcg
 
+\c vtcg
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(25),
-    password_hash VARCHAR(255),
-    email VARCHAR(100),
+    username VARCHAR(25) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
     bio VARCHAR(160),
     packs_opened INT DEFAULT 0,
     cards_owned INT DEFAULT 0,
+    trade_up_opens INT DEFAULT 0,
+    daily_pack_opens INT DEFAULT 5,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -24,7 +27,7 @@ CREATE TABLE cards (
     rarity VARCHAR(1), -- M/R/U/C
     card_number VARCHAR(50),
 
-    img_url TEXT,
+    img_url TEXT
 );
 
 CREATE TABLE pack_history (
@@ -97,15 +100,26 @@ CREATE TABLE decks (
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
 
     name VARCHAR(100),
+    deck_type VARCHAR(20) NOT NULL DEFAULT 'TRUE', -- TRUE/WISHLIST
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- TRUE decks reference a specific owned copy (user_card_id).
+-- WISHLIST decks reference a card the user doesn't necessarily own yet (card_id) with a quantity.
+-- Exactly one of user_card_id / card_id is set, matching the deck's type.
 CREATE TABLE deck_cards (
+    id SERIAL PRIMARY KEY,
+
     deck_id INT REFERENCES decks(id) ON DELETE CASCADE,
     user_card_id INT REFERENCES user_cards(id),
+    card_id INT REFERENCES cards(id),
+    quantity INT NOT NULL DEFAULT 1,
 
-    PRIMARY KEY (deck_id, user_card_id)
+    CHECK (
+        (user_card_id IS NOT NULL AND card_id IS NULL) OR
+        (user_card_id IS NULL AND card_id IS NOT NULL)
+    )
 );
 
 CREATE TABLE metadata (

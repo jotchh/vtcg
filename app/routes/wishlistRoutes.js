@@ -1,19 +1,21 @@
 const express = require("express");
 const router = express.Router();
-const deckService = require("../services/deckService");
+const makeDeckService = require("../services/deckService");
 
 module.exports = function (pool) {
-  router.get("/", (req, res) => {
-    res.status(200).json(deckService.listWishlistForUser(req.userId));
+  const deckService = makeDeckService(pool);
+
+  router.get("/", async (req, res) => {
+    res.status(200).json(await deckService.listWishlistForUser(req.session.userId));
   });
 
-  router.post("/", (req, res) => {
-    let wishlist = deckService.addCardToWishlist(req.userId, req.body);
+  router.post("/", async (req, res) => {
+    let wishlist = await deckService.addCardToWishlist(req.session.userId, req.body);
     res.status(200).json(wishlist);
   });
 
-  router.delete("/:cardId", (req, res) => {
-    let wishlist = deckService.removeCardFromWishlist(req.userId, parseInt(req.params.cardId, 10));
+  router.delete("/:cardId", async (req, res) => {
+    let wishlist = await deckService.removeCardFromWishlist(req.session.userId, parseInt(req.params.cardId, 10));
     res.status(200).json(wishlist);
   });
 

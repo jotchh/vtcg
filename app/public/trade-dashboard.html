@@ -11,7 +11,6 @@
 </head>
 
 <body>
-    <!-- Navigation -->
     <header>
         <nav>
             <a href="index.html">Home</a>
@@ -25,7 +24,6 @@
     <main>
         <h1>Trading Dashboard</h1>
 
-        <!--# START A NEW TRADE #-->
         <section class="start-trade">
             <h2>Start a New Trade</h2>
 
@@ -34,19 +32,15 @@
                 <button id="card-search-button" type="button">Search by Card</button>
             </div>
 
-            <!-- USER SEARCH -->
             <div id="user-search-panel" class="search-panel">
                 <label for="user-search">Find a User</label>
                 <input id="user-search" type="search" placeholder="Enter username...">
 
-                <!-- Put results here -->
                 <div id="user-results" class="search-results">
 
                 </div>
             </div>
 
-
-            <!--# CARD SEARCH #-->
             <div id="card-search-panel" class="search-panel">
                 <label for="card-search">Find a Card</label>
                 <input id="card-search" type="search" placeholder="Enter card name...">
@@ -54,7 +48,7 @@
                 <div class="card-filters">
                     <select id="game-filter">
                         <option value="">All Games</option>
-                        <option value="pokemon">Pokémon</option>
+                        <option value="pokemon">Magic</option>
                     </select>
 
                     <select id="set-filter">
@@ -62,33 +56,10 @@
                     </select>
                 </div>
 
-                <!-- Generate listings here -->
                 <div id="card-results" class="listing-results">
-
-                    <!-- Examples -->
-                    <!--
-                    <article class="trade-listing">
-                        <div class="card-image-placeholder">Card Art</div>
-                        
-                        <h3>Charizard ex</h3>
-                        <p>Owner: Sam</p>
-                        <p>Looking for: Pikachu ex</p>
-                        <button type="button">Start Trade</button>
-                    </article>
-                    
-                    <article class="trade-listing">
-                        <div class="card-image-placeholder">Card Art</div>
-
-                        <h3>Mew ex</h3>
-                        <p>Owner: Jordan</p>
-                        <p>Open to offers</p>
-                        <button type="button">Start Trade</button>
-                    </article>
-                    -->
 
                 </div>
 
-                <!-- Paging -->
                 <div id="listing-paging" class="paging">
                     <button id="previous-page" type="button">Previous</button>
                     <span id="page-number">Page 1</span>
@@ -97,7 +68,6 @@
             </div>
         </section>
 
-        <!--# CREATE LISTING #-->
         <section class="create-listing-section">
             <h2>Have a Card to Trade?</h2>
 
@@ -106,7 +76,6 @@
             <button id="create-listing-button" type="button">Create Listing</button>
         </section>
 
-        <!--# MY TRADES #-->
         <section class="my-trades">
             <h2>My Trades</h2>
             <div class="trade-tabs">
@@ -115,29 +84,7 @@
                 <button id="completed-tab" type="button">Completed</button>
             </div>
 
-            <!-- Place trade contents here -->
             <div id="trade-list">
-
-                <!-- Example incoming trade
-
-                <article class="trade-preview">
-                    <h3>Trade from Sam</h3>
-
-                    <div>
-                        <p>Sam offers:</p>
-                        <span>Pikachu</span>
-                    </div>
-
-                    <div>
-                        <p>Sam wants:</p>
-                        <span>Charizard</span>
-                    </div>
-
-                    <button>View Trade</button>
-                    <button>Accept</button>
-                    <button>Reject</button>
-                </article>
-                -->
 
             </div>
         </section>

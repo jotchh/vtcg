@@ -12,8 +12,14 @@ pool.connect().then(() => {
   console.log("Connected to database");
 });
 
-let createSyncService = require("./services/syncService");
-let syncService = createSyncService(pool, env);
+const HOURS_PER_DAY = 24;
+const MINUTES_PER_HOUR = 60;
+const SECONDS_PER_MINUTE = 60;
+const MILLISECONDS_PER_SECOND = 1000;
+let CARD_UPDATE_INTERVAL = HOURS_PER_DAY * MINUTES_PER_HOUR * SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND;
+
+let createCardUpdateService = require("./services/cardUpdateService");
+let cardUpdateService = createCardUpdateService(pool, env);
 
 let searchRoutes = require("./routes/searchRoutes");
 let cardRoutes = require("./routes/cardRoutes");
@@ -21,10 +27,25 @@ let cardRoutes = require("./routes/cardRoutes");
 app.use("/search", searchRoutes(pool));
 app.use("/card", cardRoutes(pool));
 
+async function runCardUpdate() {
+  console.log("running checks...")
+  try {
+    if (await cardUpdateService.shouldUpdate()) {
+      console.log("Starting database sync...");
+      await cardUpdateService.updateCards();
+    } else {
+      console.log("Database sync not needed.");
+    }
+  } catch (error) {
+    console.error("Sync failed:", error);
+  }
+}
+
 app.listen(port, hostname, async () => {
   console.log(`http://${hostname}:${port}`);
-  if (await syncService.shouldSync()){
-    console.log("Syncing database...")
-    await syncService.syncDatabase();
-  } 
+
+  // intial run on start-up as a sanity check.
+  await runCardUpdate();
+  
+  setInterval(runCardUpdate, CARD_UPDATE_INTERVAL);
 });

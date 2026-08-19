@@ -32,6 +32,27 @@ if (!cardId) {
             image.alt = card.name;
 
             cardArt.append(image);
+            
+            cardArt.addEventListener("mousemove", (event) => {
+                let rect = cardArt.getBoundingClientRect();
+
+                let x = event.clientX - rect.left;
+                let y = event.clientY - rect.top;
+
+                let centerX = rect.width / 2;
+                let centerY = rect.height / 2;
+
+                let rotateX = ((y - centerY) / centerY) * -10;
+                let rotateY = ((x - centerX) / centerX) * 10;
+
+                cardArt.style.transform =
+                    `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.03)`;
+            });
+
+            cardArt.addEventListener("mouseleave", () => {
+                cardArt.style.transform =
+                    "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)";
+            });
 
             let cardContent = document.createElement("div");
             cardContent.className = "card-content";

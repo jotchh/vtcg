@@ -6,6 +6,7 @@ const env = require("../env.json");
 
 const createSyncService = require("./services/syncService");
 const searchRoutes = require("./routes/searchRoutes");
+const packRoutes = require("./routes/packRoutes");
 
 const app = express();
 const port = 3000;
@@ -14,6 +15,7 @@ const hostname = "localhost";
 const pool = new Pool(env.pool);
 
 
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(
@@ -84,6 +86,7 @@ app.get("/logout", (req, res) => {
 
 
 app.use("/search", searchRoutes(pool));
+app.use("/packs", packRoutes(pool, env));
 
 
 const syncService = createSyncService(pool, env);

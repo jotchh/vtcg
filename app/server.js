@@ -7,6 +7,7 @@ const createCardUpdateService = require("./services/cardUpdateService");
 const searchRoutes = require("./routes/searchRoutes");
 const cardRoutes = require("./routes/cardRoutes");
 const packRoutes = require("./routes/packRoutes");
+const collectionRoutes = require("./routes/collectionRoutes");
 
 const app = express();
 const port = 3000;
@@ -103,6 +104,7 @@ async function runCardUpdate() {
   }
 }
 app.use("/packs", packRoutes(pool, env));
+app.use("/collections", collectionRoutes(pool));
 
 app.listen(port, hostname, async () => {
   console.log(`http://${hostname}:${port}`);

@@ -3,17 +3,23 @@ const bcrypt = require("bcrypt");
 const session = require("express-session");
 const { Pool } = require("pg");
 const env = require("../env.json");
-
-const createSyncService = require("./services/syncService");
+const createCardUpdateService = require("./services/cardUpdateService");
 const searchRoutes = require("./routes/searchRoutes");
+const cardRoutes = require("./routes/cardRoutes");
 const packRoutes = require("./routes/packRoutes");
 
 const app = express();
 const port = 3000;
 const hostname = "localhost";
-
 const pool = new Pool(env.pool);
 
+const HOURS_PER_DAY = 24;
+const MINUTES_PER_HOUR = 60;
+const SECONDS_PER_MINUTE = 60;
+const MILLISECONDS_PER_SECOND = 1000;
+let CARD_UPDATE_INTERVAL = HOURS_PER_DAY * MINUTES_PER_HOUR * SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND;
+
+const cardUpdateService = createCardUpdateService(pool, env);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -25,8 +31,6 @@ app.use(
     saveUninitialized: false,
   })
 );
-
-
 
 app.post("/register", async (req, res) => {
   const { username, email, password } = req.body;
@@ -83,9 +87,21 @@ app.get("/logout", (req, res) => {
   });
 });
 
-
-
 app.use("/search", searchRoutes(pool));
+app.use("/card", cardRoutes(pool));
+
+async function runCardUpdate() {
+  try {
+    if (await cardUpdateService.shouldUpdate()) {
+      console.log("Starting card sync...");
+      await cardUpdateService.updateCards();
+    } else {
+      console.log("Card sync not needed.");
+    }
+  } catch (error) {
+    console.error("Sync failed:", error);
+  }
+}
 app.use("/packs", packRoutes(pool, env));
 
 
@@ -94,8 +110,8 @@ const syncService = createSyncService(pool, env);
 app.listen(port, hostname, async () => {
   console.log(`http://${hostname}:${port}`);
 
-  if (await syncService.shouldSync()) {
-    console.log("Syncing database...");
-    await syncService.syncDatabase();
-  }
+  // intial run on start-up as a sanity check.
+  await runCardUpdate();
+  
+  setInterval(runCardUpdate, CARD_UPDATE_INTERVAL);
 });

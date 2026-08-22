@@ -1,0 +1,119 @@
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding: 20px;
+}
+
+.card {
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    min-height: 230px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: white;
+    max-height: 230px;
+    overflow-y: auto;
+    cursor:pointer;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    transform: translateY(-3px);
+}
+
+.card img {
+    width: 145px;
+    height: 210px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.card-content {
+    min-width: 0;
+}
+
+.card h3 {
+    margin: 0 0 10px;
+}
+
+.card .meta {
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
+.card .details {
+    font-size: 0.85rem;
+    overflow-wrap: break-word;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    padding: 20px;
+}
+
+.search-controls {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+#search-results.loading {
+    opacity: 0.5;
+}
+
+.skeleton-card {
+    overflow: hidden;
+}
+
+.skeleton-image,
+.skeleton-line {
+    background: #eee;
+    animation: loading 1.2s infinite alternate;
+}
+
+.skeleton-image {
+    width: 120px;
+    height: 180px;
+    flex-shrink: 0;
+}
+
+.skeleton-line {
+    height: 15px;
+    margin: 10px 0;
+}
+
+@keyframes loading {
+    from {
+        opacity: 0.5;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 1200px) {
+    .card-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .card img {
+        width: 100px;
+        height: 150px;
+    }
+}

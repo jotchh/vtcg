@@ -11,8 +11,9 @@ CREATE TABLE users (
     bio VARCHAR(160),
     packs_opened INT DEFAULT 0,
     cards_owned INT DEFAULT 0,
-    trade_up_opens INT DEFAULT 0,   
-    daily_pack_opens INT DEFAULT 5,   
+    trade_up_opens INT DEFAULT 0,
+    daily_pack_opens INT DEFAULT 5,
+    pack_reset_date DATE DEFAULT CURRENT_DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -26,8 +27,9 @@ CREATE TABLE cards (
     name VARCHAR(255) NOT NULL,
     rarity VARCHAR(1), -- M/R/U/C
     card_number VARCHAR(50),
+    ext_data JSONB,
 
-    img_url TEXT 
+    img_url TEXT
 );
 
 CREATE TABLE pack_history (

@@ -8,96 +8,187 @@ let pageInfo = document.getElementById("page-info");
 
 let cards = [];
 let currentPage = 1;
-let pageSize = 25;
+let totalCards = 0;
+let totalPages = 1;
 
-async function loadCards() {
-   fetch("/search").then(response => response.json())
-    .then(data => {
-        cards = data;
-        currentPage = 1;
-        renderTable();
-    })
-    .catch(error => {
-        console.error("Error fetching cards:", error);
-    });
-}
+function loadCards(page = 1) {
+    let search = document.getElementById("search").value;
+    let game = document.getElementById("game-select").value;
+    let url = `/search/product?q=${encodeURIComponent(search)}&page=${page}`;
 
-function renderTable() {
-    tbody.replaceChildren();
-
-    let start = (currentPage - 1) * pageSize;
-    let end = start + pageSize;
-
-    let pageCards = cards.slice(start, end);
-
-    for (let card of pageCards) {
-        let row = document.createElement("tr");
-
-        let nameCell = document.createElement("td");
-        let setCell = document.createElement("td");
-        let rarityCell = document.createElement("td");
-        let imgCell = document.createElement("td");
-        let img = document.createElement("img");
-
-        nameCell.textContent = card.name;
-        setCell.textContent = card.set_name;
-        rarityCell.textContent = card.rarity;
-
-        img.src = card.img_url;
-        img.alt = card.name;
-        img.width = 100;
-
-        imgCell.appendChild(img);
-
-        row.appendChild(nameCell);
-        row.appendChild(setCell);
-        row.appendChild(rarityCell);
-        row.appendChild(imgCell);
-
-        tbody.appendChild(row);
+    if (game) {
+        url += `&game=${encodeURIComponent(game)}`;
     }
 
-    let totalPages = Math.max(1, Math.ceil(cards.length / pageSize));
+    setLoading(true);
+    return fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to load cards");
+            }
+            return response.json();
+        })
+        .then(data => {
+            cards = data.cards;
+            currentPage = data.page;
+            totalCards = data.total;
+            totalPages = data.totalPages;
+            renderGrid();
+        })
+        .catch(error => {
+            console.error("Error fetching cards:", error);
+            queryMessage.textContent = "Failed to load cards.";
+            renderError();
+        })
+        .finally(() => {
+            setLoading(false);
 
-    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });     
+        });
+}
 
-    prevBtn.disabled = currentPage === 1;
-    nextBtn.disabled = currentPage === totalPages;
+function setLoading(loading) {
+    if (loading) {
+        queryMessage.textContent = "LOADING...";
+
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
+
+        renderSkeletons();
+    } else {
+        queryMessage.textContent = "";
+
+        prevBtn.disabled = currentPage === 1;
+        nextBtn.disabled = currentPage === totalPages;
+    }
+}
+
+function renderSkeletons() {
+    tbody.replaceChildren();
+
+    for (let i = 0; i < 8; i++) {
+        let card = document.createElement("div");
+        card.className = "card skeleton-card";
+
+        let image = document.createElement("div");
+        image.className = "skeleton-image";
+
+        let content = document.createElement("div");
+        content.className = "card-content";
+
+        let title = document.createElement("div");
+        title.className = "skeleton-line title";
+
+        let line1 = document.createElement("div");
+        line1.className = "skeleton-line";
+
+        let line2 = document.createElement("div");
+        line2.className = "skeleton-line";
+
+        let shortLine = document.createElement("div");
+        shortLine.className = "skeleton-line short";
+
+        content.append(title, line1, line2, shortLine);
+        card.append(image, content);
+        tbody.append(card);
+    }
+}
+
+function renderError() {
+    tbody.replaceChildren();
+
+    let errorMessage = document.createElement("div");
+    errorMessage.className = "error-message";
+    errorMessage.textContent = "Something went wrong while loading the cards.";
+
+    tbody.append(errorMessage);
+}
+
+function renderGrid() {
+    tbody.replaceChildren();
+
+    cards.forEach(card => {
+        let details;
+
+        try {
+            details = card.ext_data;
+        } catch (error) {
+            details = null;
+        }
+
+        let cardElement = document.createElement("div");
+        cardElement.className = "card";
+
+        let image = document.createElement("img");
+        image.src = card.img_url;
+        image.alt = card.name;
+
+        let cardContent = document.createElement("div");
+        cardContent.className = "card-content";
+
+        let title = document.createElement("h3");
+        title.textContent = card.name;
+
+        let meta = document.createElement("div");
+        meta.className = "meta";
+
+        let game = document.createElement("div");
+        let gameLabel = document.createElement("strong");
+        gameLabel.textContent = "Game:";
+
+        game.append(gameLabel, document.createTextNode(` ${card.game}`));
+
+        let set = document.createElement("div");
+        let setLabel = document.createElement("strong");
+        setLabel.textContent = "Set:";
+
+        set.append(setLabel, document.createTextNode(` ${card.set_name}`));
+
+        meta.append(game, set);
+
+        let detailsElement = document.createElement("div");
+        detailsElement.className = "details";
+        
+        cardContent.append(title, meta, detailsElement);
+        cardElement.append(image,cardContent);
+        
+        cardElement.addEventListener("click", () => {
+            window.location.href = `card.html?id=${card.id}`;
+        });
+
+        tbody.append(cardElement);
+    });
+
+    pageInfo.textContent = `Page ${currentPage} of ${totalPages} (${totalCards} cards)`;
 }
 
 prevBtn.addEventListener("click", () => {
     if (currentPage > 1) {
-        currentPage--;
-        renderTable();
+        loadCards(currentPage - 1);
     }
 });
 
 nextBtn.addEventListener("click", () => {
-    let totalPages = Math.ceil(cards.length / pageSize);
     if (currentPage < totalPages) {
-        currentPage++;
-        renderTable();
+        loadCards(currentPage + 1);
     }
 });
 
-document.getElementById("search-form").addEventListener("submit", (event) => {
+document.getElementById("search-form").addEventListener("submit", event => {
     event.preventDefault();
+
     let search = document.getElementById("search").value;
-    queryMessage.textContent = `LOADING...`;
 
-    if (!search) {
-        queryMessage.textContent = "";
-        loadCards();
-        return;
-    }
-
-    fetch(`/search?q=${encodeURIComponent(search)}`)
-        .then(response => response.json())
-        .then(data => {
-            queryMessage.textContent = `Searching for: ${search}`;
-            cards = data;
-            currentPage = 1;
-            renderTable();
+    loadCards(1)
+        .then(() => {
+            if (search) {
+                queryMessage.textContent = `Searching for: ${search}`;
+            } else {
+                queryMessage.textContent = "";
+            }
         })
         .catch(error => {
             queryMessage.textContent = `ERROR searching for: ${search} - ${error.message}`;
@@ -105,4 +196,4 @@ document.getElementById("search-form").addEventListener("submit", (event) => {
         });
 });
 
-loadCards();
+loadCards(1);

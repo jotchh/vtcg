@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Packs</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        tr, th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>VTCG Packs</h1>
+    <p>Open a pack to pull new cards.</p>
+
+    <p id="opens-remaining"></p>
+
+    <form id="open-form">
+        <div>
+            <label for="game-select">Game</label>
+            <select id="game-select"></select>
+        </div>
+        <div>
+            <label for="set-select">Set</label>
+            <select id="set-select"></select>
+        </div>
+        <button type="submit" id="open-btn">Open Pack</button>
+    </form>
+
+    <!--
+    TODO: add option to scrap 10 cards for +1 pack open. Must wait until collection is complete to implement, so there is a way to validate # of cards
+    -->
+    
+    <hr>
+    <p id="status-message"></p>
+    <table id="results-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Set</th>
+                <th>Rarity</th>
+                <th>Condition</th>
+                <th>Card Art</th>
+            </tr>
+        </thead>
+        <tbody id="pulled-cards"></tbody>
+    </table>
+</body>
+<script src="js/packs.js"></script>
+</html>

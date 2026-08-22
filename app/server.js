@@ -85,7 +85,7 @@ app.post("/login", async (req, res) => {
         return res.status(500).send("Error logging in.");
       }
 
-      return res.redirect("/index.html");
+      return res.redirect("/dashboard.html");
     });
   } catch (err) {
     console.error(err);

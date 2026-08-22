@@ -2,10 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>VTCG - Login</title>
+    <title>VTCG -> Login</title>
 </head>
 <body>
     <h2>Login to VTCG</h2>
+    
+
+    <p id="error-msg" style="color: red; display: none;">Incorrect email or password. Please try again.</p>
     
     <form action="/login" method="POST">
         <label for="email">Email:</label>
@@ -18,5 +21,13 @@
     </form>
     
     <p>Don't have an account? <a href="/register.html">Register here</a></p>
+
+    <script>
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('error')) {
+            document.getElementById('error-msg').style.display = 'block';
+        }
+    </script>
 </body>
 </html>

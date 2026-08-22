@@ -26,8 +26,9 @@ CREATE TABLE cards (
     name VARCHAR(255) NOT NULL,
     rarity VARCHAR(1), -- M/R/U/C
     card_number VARCHAR(50),
+    ext_data JSONB,
 
-    img_url TEXT 
+    img_url TEXT
 );
 
 CREATE TABLE pack_history (

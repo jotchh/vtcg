@@ -1,15 +1,18 @@
+
 CREATE DATABASE vtcg;
 -- Connect to the database before running the rest
-\c vtcg
 
+\c vtcg
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(25),
-    password_hash VARCHAR(255),
-    email VARCHAR(100),
+    username VARCHAR(25) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
     bio VARCHAR(160),
     packs_opened INT DEFAULT 0,
     cards_owned INT DEFAULT 0,
+    trade_up_opens INT DEFAULT 0,   
+    daily_pack_opens INT DEFAULT 5,   
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -113,3 +116,4 @@ CREATE TABLE metadata (
     key TEXT PRIMARY KEY,
     value TEXT
 );
+

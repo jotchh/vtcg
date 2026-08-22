@@ -55,6 +55,10 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
+  if (!email || !password) {
+    return res.status(400).send("Email and password are required.");
+  }
+
   try {
     const userResult = await pool.query(
       "SELECT * FROM users WHERE email = $1",
@@ -62,23 +66,30 @@ app.post("/login", async (req, res) => {
     );
 
     if (userResult.rows.length === 0) {
-      return res.send("User not found.");
+      return res.status(401).send("Invalid email or password.");
     }
 
     const user = userResult.rows[0];
     const match = await bcrypt.compare(password, user.password_hash);
 
-    if (match) {
-      req.session.userId = user.id;
-      req.session.username = user.username;
-
-      res.send(`Welcome back, ${user.username}! You are logged in.`);
-     
-      res.send("Incorrect password.");
+    if (!match) {
+      return res.status(401).send("Invalid email or password.");
     }
+
+    req.session.userId = user.id;
+    req.session.username = user.username;
+
+    return req.session.save((err) => {
+      if (err) {
+        console.error("Error saving login session:", err);
+        return res.status(500).send("Error logging in.");
+      }
+
+      return res.redirect("/index.html");
+    });
   } catch (err) {
     console.error(err);
-    res.send("Error logging in.");
+    return res.status(500).send("Error logging in.");
   }
 });
 

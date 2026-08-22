@@ -28,13 +28,12 @@ app.use("/search", searchRoutes(pool));
 app.use("/card", cardRoutes(pool));
 
 async function runCardUpdate() {
-  console.log("running checks...")
   try {
     if (await cardUpdateService.shouldUpdate()) {
-      console.log("Starting database sync...");
+      console.log("Starting card sync...");
       await cardUpdateService.updateCards();
     } else {
-      console.log("Database sync not needed.");
+      console.log("Card sync not needed.");
     }
   } catch (error) {
     console.error("Sync failed:", error);

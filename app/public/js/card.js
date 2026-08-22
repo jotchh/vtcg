@@ -16,8 +16,6 @@ if (!cardId) {
             return response.json();
         })
         .then(card => {
-            console.log(card);
-
             pageTitle.textContent = card.name;
             queryMessage.remove();
 

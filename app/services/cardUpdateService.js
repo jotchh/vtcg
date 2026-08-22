@@ -23,9 +23,7 @@ module.exports = function(pool, env) {
 
         for(let game of categoryData.categories){
             let {data: setData} = await axios.get(`${BASE_URL}/${game.id}/sets`);
-            if (GAMES.includes(game.name)){
-                console.log(`Syncing ${game.name}...`);
-                
+            if (GAMES.includes(game.name)){                
                 for(let set of setData.sets){
                     try {
                     let { data: cardData } = await axios.get(`${BASE_URL}/${game.id}/sets/${set.id}/cards`);
@@ -34,11 +32,9 @@ module.exports = function(pool, env) {
                         let query = `INSERT INTO cards (api_card_id, game, set_name, name, rarity, card_number, ext_data, img_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) ON CONFLICT (api_card_id) DO NOTHING`;
                         
                         let rarity = RARITY_MAP[card.rarity] ?? null;
-                        console.log(card.ext_data);
                     
                         let ext_data = card.ext_data ? card.ext_data : null;
                         let values = [card.id, game.name, set.name, card.name, rarity, card.number, ext_data, card.image_url];
-                        console.log(values);
                         pool.query(query, values);
                     }
                     } catch (error) {
@@ -55,11 +51,10 @@ module.exports = function(pool, env) {
         let metdataQuery = "INSERT INTO metadata (key, value) VALUES ('last_sync', $1) ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value"
         pool.query(metdataQuery, [new Date().toISOString()])
             .then(result => {
-            console.log(result);
-            console.log("Done!")
+                console.log("Done!")
             })
             .catch(error => {
-            console.error("Error executing query:", err.stack);
+                console.error("Error executing query:", err.stack);
             });
     }
     return { shouldUpdate, updateCards};

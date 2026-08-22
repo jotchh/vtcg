@@ -6,6 +6,8 @@ const env = require("../env.json");
 const createCardUpdateService = require("./services/cardUpdateService");
 const searchRoutes = require("./routes/searchRoutes");
 const cardRoutes = require("./routes/cardRoutes");
+const packRoutes = require("./routes/packRoutes");
+const collectionRoutes = require("./routes/collectionRoutes");
 
 const app = express();
 const port = 3000;
@@ -20,6 +22,7 @@ let CARD_UPDATE_INTERVAL = HOURS_PER_DAY * MINUTES_PER_HOUR * SECONDS_PER_MINUTE
 
 const cardUpdateService = createCardUpdateService(pool, env);
 
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(
@@ -100,6 +103,8 @@ async function runCardUpdate() {
     console.error("Sync failed:", error);
   }
 }
+app.use("/packs", packRoutes(pool, env));
+app.use("/collections", collectionRoutes(pool));
 
 app.listen(port, hostname, async () => {
   console.log(`http://${hostname}:${port}`);

@@ -104,9 +104,6 @@ async function runCardUpdate() {
 }
 app.use("/packs", packRoutes(pool, env));
 
-
-const syncService = createSyncService(pool, env);
-
 app.listen(port, hostname, async () => {
   console.log(`http://${hostname}:${port}`);
 

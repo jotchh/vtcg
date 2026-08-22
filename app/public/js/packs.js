@@ -1,8 +1,23 @@
+let gameSelect = document.getElementById("game-select");
 let setSelect = document.getElementById("set-select");
 let opensRemaining = document.getElementById("opens-remaining");
 let statusMessage = document.getElementById("status-message");
 let openBtn = document.getElementById("open-btn");
 let tbody = document.getElementById("pulled-cards");
+let allSets = [];
+
+function populateSetsForGame(selectedGame) {
+    setSelect.replaceChildren();
+
+    for (let set of allSets) {
+        if (set.game !== selectedGame) continue;
+
+        let option = document.createElement("option");
+        option.value = set.set_name;
+        option.textContent = set.set_name;
+        setSelect.appendChild(option);
+    }
+}
 
 async function loadPackInfo() {
     fetch("/packs")
@@ -10,18 +25,28 @@ async function loadPackInfo() {
         .then(data => {
             opensRemaining.textContent = `Free opens left today: ${data.dailyPackOpens}`;
 
-            setSelect.replaceChildren();
-            for (let set of data.sets) {
+            allSets = data.sets;
+
+            let games = [...new Set(allSets.map(set => set.game))];
+
+            gameSelect.replaceChildren();
+            for (let game of games) {
                 let option = document.createElement("option");
-                option.value = JSON.stringify({ game: set.game, set_name: set.set_name });
-                option.textContent = `${set.game} - ${set.set_name}`;
-                setSelect.appendChild(option);
+                option.value = game;
+                option.textContent = game;
+                gameSelect.appendChild(option);
             }
+
+            populateSetsForGame(gameSelect.value);
         })
         .catch(error => {
             console.error("Error loading pack info:", error);
         });
 }
+
+gameSelect.addEventListener("change", () => {
+    populateSetsForGame(gameSelect.value);
+});
 
 function renderResults(cards) {
     tbody.replaceChildren();
@@ -60,12 +85,13 @@ function renderResults(cards) {
 document.getElementById("open-form").addEventListener("submit", (event) => {
     event.preventDefault();
 
-    if (!setSelect.value) {
+    if (!gameSelect.value || !setSelect.value) {
         statusMessage.textContent = "No set selected.";
         return;
     }
 
-    let { game, set_name } = JSON.parse(setSelect.value);
+    let game = gameSelect.value;
+    let set_name = setSelect.value;
     statusMessage.textContent = "Opening pack...";
     openBtn.disabled = true;
 

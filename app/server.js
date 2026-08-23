@@ -13,7 +13,6 @@ pool.connect().then(() => {
   console.log("Connected to database");
 });
 
-let mockAuth = require("./middleware/mockAuth");
 let createSyncService = require("./services/syncService");
 let searchRoutes = require("./routes/searchRoutes");
 let decksRoutes = require("./routes/decksRoutes");
@@ -21,7 +20,6 @@ let wishlistRoutes = require("./routes/wishlistRoutes");
 
 let syncService = createSyncService(pool, env);
 app.use("/search", searchRoutes(pool));
-app.use(mockAuth);
 app.use("/api/decks", decksRoutes(pool));
 app.use("/api/wishlist", wishlistRoutes(pool));
 

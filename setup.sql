@@ -1,4 +1,3 @@
-
 CREATE DATABASE vtcg;
 -- Connect to the database before running the rest
 
@@ -13,6 +12,7 @@ CREATE TABLE users (
     cards_owned INT DEFAULT 0,
     trade_up_opens INT DEFAULT 0,
     daily_pack_opens INT DEFAULT 5,
+    pack_reset_date DATE DEFAULT CURRENT_DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -26,6 +26,7 @@ CREATE TABLE cards (
     name VARCHAR(255) NOT NULL,
     rarity VARCHAR(1), -- M/R/U/C
     card_number VARCHAR(50),
+    ext_data JSONB,
 
     img_url TEXT
 );
@@ -100,26 +101,28 @@ CREATE TABLE decks (
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
 
     name VARCHAR(100),
-    deck_type VARCHAR(20) NOT NULL DEFAULT 'TRUE', -- TRUE/WISHLIST
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- TRUE decks reference a specific owned copy (user_card_id).
--- WISHLIST decks reference a card the user doesn't necessarily own yet (card_id) with a quantity.
--- Exactly one of user_card_id / card_id is set, matching the deck's type.
+-- Quantity of a card in a deck; enforced app-side to not exceed how many
+-- of that card the user owns (COUNT(*) FROM user_cards). The same card can
+-- appear in multiple decks at once - only its per-deck quantity is capped.
 CREATE TABLE deck_cards (
-    id SERIAL PRIMARY KEY,
-
     deck_id INT REFERENCES decks(id) ON DELETE CASCADE,
-    user_card_id INT REFERENCES user_cards(id),
     card_id INT REFERENCES cards(id),
     quantity INT NOT NULL DEFAULT 1,
 
-    CHECK (
-        (user_card_id IS NOT NULL AND card_id IS NULL) OR
-        (user_card_id IS NULL AND card_id IS NOT NULL)
-    )
+    PRIMARY KEY (deck_id, card_id)
+);
+
+-- Cards a user wants but doesn't (fully) own, independent of any deck.
+CREATE TABLE wishlist_cards (
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    card_id INT REFERENCES cards(id),
+    quantity INT NOT NULL DEFAULT 1,
+
+    PRIMARY KEY (user_id, card_id)
 );
 
 CREATE TABLE metadata (

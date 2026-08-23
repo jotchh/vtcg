@@ -33,36 +33,36 @@ function renderDecks(decks) {
 
         let name = document.createElement("span");
         name.textContent = deck.name;
-
-        let type = document.createElement("span");
-        type.className = "deck-type";
-        type.textContent = deck.deckType === "WISHLIST" ? "Wishlist Deck" : "True Deck";
-
         info.appendChild(name);
-        info.appendChild(type);
 
         let actions = document.createElement("div");
         actions.className = "deck-actions";
 
-        let viewBtn = document.createElement("button");
-        viewBtn.textContent = "View";
-        viewBtn.addEventListener("click", () => {
-            window.location.href = `deck-editor.html?id=${deck.id}&mode=view`;
-        });
-
         let editBtn = document.createElement("button");
         editBtn.textContent = "Edit";
         editBtn.addEventListener("click", () => {
-            window.location.href = `deck-editor.html?id=${deck.id}&mode=edit`;
+            window.location.href = `deck-editor.html?id=${deck.id}`;
         });
 
-        actions.appendChild(viewBtn);
+        let deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.addEventListener("click", () => deleteDeck(deck.id));
+
         actions.appendChild(editBtn);
+        actions.appendChild(deleteBtn);
 
         row.appendChild(info);
         row.appendChild(actions);
         deckList.appendChild(row);
     }
+}
+
+function deleteDeck(deckId) {
+    fetch(`/api/decks/${deckId}`, { method: "DELETE" })
+        .then(() => loadDecks())
+        .catch(error => {
+            console.error("Error deleting deck:", error);
+        });
 }
 
 newDeckBtn.addEventListener("click", () => {

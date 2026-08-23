@@ -40,10 +40,13 @@ function removeCard(cardId) {
 }
 
 function addCardToWishlist(card) {
+    let quantity = parseInt(window.prompt(`How many of "${card.name}" do you want?`, "1"), 10);
+    if (!quantity || quantity < 1) return;
+
     fetch("/api/wishlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cardId: card.id, quantity: 1 }),
+        body: JSON.stringify({ cardId: card.id, quantity }),
     })
         .then(response => response.json())
         .then(cards => {
@@ -58,7 +61,7 @@ function addCardToWishlist(card) {
 }
 
 addCardBtn.addEventListener("click", () => {
-    toggleCardPicker(cardPickerEl, addCardToWishlist);
+    toggleCardPicker(cardPickerEl, searchAllCards, addCardToWishlist);
 });
 
 loadWishlist();

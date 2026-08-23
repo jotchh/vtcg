@@ -1,9 +1,10 @@
-// Adapter over the card search API used by deck & wishlist "Add Card" pickers.
-// Backed today by the shared /search?q= route, which returns every match unpaginated.
-// TODO: once josh.cardsearch merges, swap searchCards() to call
-// /search/product?q=&game=&page= (real server-side pagination) instead - callers don't change.
+// Shared card-picker UI used by wishlist.js's "Add Card" button.
+// Visually reuses search.css's .card-grid/.card classes so the picker matches the
+// look of the search page.
+// TODO: deck-editor.js needs an "add from my collection" picker backed by
+// /collections (main-only, not merged into this branch yet - see deck-editor.js).
 
-function searchCards(query) {
+function searchAllCards(query) {
     let url = query ? `/search?q=${encodeURIComponent(query)}` : "/search";
     return fetch(url).then(response => {
         if (!response.ok) throw new Error("Failed to search cards");
@@ -11,12 +12,14 @@ function searchCards(query) {
     });
 }
 
-// Renders a searchable card list inside `container` and calls onPick(card)
-// when the user selects one. `card` has { id, name, set_name, rarity, img_url }.
-function renderCardPicker(container, onPick) {
+// Renders a searchable card grid inside `container` and calls onPick(card) when the
+// user selects one. `fetchCards(query)` resolves to an array of { id, name, set_name,
+// rarity, img_url }.
+function renderCardPicker(container, fetchCards, onPick) {
     container.replaceChildren();
 
     let form = document.createElement("form");
+    form.className = "search-controls";
     let input = document.createElement("input");
     input.type = "text";
     input.placeholder = "Search cards...";
@@ -28,8 +31,8 @@ function renderCardPicker(container, onPick) {
     let status = document.createElement("p");
     status.className = "hint";
 
-    let grid = document.createElement("ul");
-    grid.className = "card-picker-grid";
+    let grid = document.createElement("div");
+    grid.className = "card-grid";
 
     container.append(form, status, grid);
 
@@ -37,7 +40,7 @@ function renderCardPicker(container, onPick) {
         grid.replaceChildren();
 
         if (cards.length === 0) {
-            let empty = document.createElement("li");
+            let empty = document.createElement("p");
             empty.className = "hint";
             empty.textContent = "No cards found.";
             grid.appendChild(empty);
@@ -45,8 +48,8 @@ function renderCardPicker(container, onPick) {
         }
 
         for (let card of cards) {
-            let item = document.createElement("li");
-            item.className = "card-picker-item";
+            let item = document.createElement("div");
+            item.className = "card";
 
             if (card.img_url) {
                 let img = document.createElement("img");
@@ -55,23 +58,32 @@ function renderCardPicker(container, onPick) {
                 item.appendChild(img);
             }
 
-            let label = document.createElement("span");
-            label.textContent = `${card.name}${card.set_name ? " (" + card.set_name + ")" : ""}`;
-            item.appendChild(label);
+            let content = document.createElement("div");
+            content.className = "card-content";
+
+            let title = document.createElement("h3");
+            title.textContent = card.name;
+            content.appendChild(title);
+
+            let meta = document.createElement("div");
+            meta.className = "meta";
+            meta.textContent = card.set_name || "";
+            content.appendChild(meta);
 
             let pickBtn = document.createElement("button");
             pickBtn.type = "button";
             pickBtn.textContent = "Add";
             pickBtn.addEventListener("click", () => onPick(card));
-            item.appendChild(pickBtn);
+            content.appendChild(pickBtn);
 
+            item.appendChild(content);
             grid.appendChild(item);
         }
     }
 
     function runSearch(query) {
         status.textContent = "Loading...";
-        searchCards(query)
+        fetchCards(query)
             .then(cards => {
                 status.textContent = "";
                 renderGrid(cards);
@@ -91,7 +103,7 @@ function renderCardPicker(container, onPick) {
 }
 
 // Shows/hides the picker in `container`, (re)rendering it each time it's opened.
-function toggleCardPicker(container, onPick) {
+function toggleCardPicker(container, fetchCards, onPick) {
     let showing = container.style.display !== "none";
     if (showing) {
         container.style.display = "none";
@@ -99,10 +111,10 @@ function toggleCardPicker(container, onPick) {
     }
 
     container.style.display = "block";
-    renderCardPicker(container, onPick);
+    renderCardPicker(container, fetchCards, onPick);
 }
 
-// Builds a <li class="card-row"> for a card already in a deck/wishlist:
+// Builds a card-row element for a card already in a deck/wishlist:
 // image + "name xN (set)" label, plus a Remove button if onRemove is given.
 // `card` has { cardId, name, set_name, quantity, img_url }.
 function renderCardRow(card, onRemove) {

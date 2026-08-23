@@ -8,7 +8,7 @@ npm i
 ```
 
 2. **Set up environment variables**
-create a `env.sjon` file in the root dir
+create an `env.json` file in the root dir
 ```json
 {
     "pool": {

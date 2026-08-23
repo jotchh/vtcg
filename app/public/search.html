@@ -4,17 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        tr, th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-        }   
-    </style>
+    <link rel="stylesheet" href="./css/search.css">
 </head>
 <body>
     <h1>VTCG Search</h1>
@@ -25,28 +15,30 @@
             <label for="search">Search</label>
             <input type="text" id="search" placeholder="e.g. something something">
         </div>
+        
+        <div>
+            <label for="game-select">Game</label>
+            <select id="game-select">
+                <option value="">All Games</option>
+                <option value="Magic: The Gathering">Magic: The Gathering</option>
+            </select>
+        </div>
+
         <button type="submit" id="submit">Search</button>
     </form>
 
     <hr>
-    <p id="query-message"></p>
-    <table id="search-table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Set</th>
-                <th>Rarity</th>
-                <th>Card Art</th>
-            </tr>
-        </thead>
-        <tbody id="search-results"></tbody>
-    </table>
+    <div id="query-message"></div>
     
-    <div id="pagination">
-        <button id="prev-page">Previous</button>
-        <span id="page-info"></span>
-        <button id="next-page">Next</button>
+    <div id="search-results" class="card-grid">
+
     </div>
+        <div class="pagination">
+            <button id="prev-page">Previous</button>
+            <span id="page-info"></span>
+            <button id="next-page">Next</button>
+        </div>
+
 </body>
 <script src="js/search.js"></script>
 </html>

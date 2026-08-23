@@ -1,4 +1,4 @@
-// Main user testing
+// Temporary user ID until authentication is connected
 let currentUserID = 2;
 let offeredCards = [];
 

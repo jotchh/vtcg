@@ -1,14 +1,10 @@
-// Temporary user ID until authentication is connected
-let currentUserID = 2;
-let offeredCards = [];
-
 let yourCardList = document.getElementById("your-card-list");
 let offeredCardsList = document.getElementById("offered-cards");
 
 let params = new URLSearchParams(window.location.search);
 let userID = params.get("userId");
 
-let userCards = [];
+let offeredCards = [];
 let requestedCards = [];
 
 let theirCardList = document.getElementById("their-card-list");
@@ -19,10 +15,10 @@ fetch(`/trades/users/${userID}/cards`)
     return response.json();
 })
 .then(data => {
-    userCards = data;
+    let theirCards = data;
 
-    for (let i = 0; i < userCards.length; i++) {
-        let card = userCards[i];
+    for (let i = 0; i < theirCards.length; i++) {
+        let card = theirCards[i];
         
         let cardResult = document.createElement("div");
         
@@ -65,15 +61,15 @@ fetch(`/trades/users/${userID}/cards`)
     console.error("Error loading trade user cards:", error);
 });
 
-fetch(`/trades/users/${currentUserID}/cards`)
+fetch("/trades/my-cards")
 .then(response => {
     return response.json();
 })
 .then(data => {
-    userCards = data;
+    let yourCards = data;
 
-    for (let i = 0; i < userCards.length; i++) {
-        let card = userCards[i];
+    for (let i = 0; i < yourCards.length; i++) {
+        let card = yourCards[i];
         
         let cardResult = document.createElement("div");
         
@@ -142,7 +138,6 @@ submitTradeButton.addEventListener("click", function() {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            senderID: currentUserID,
             receiverID: userID,
             offeredCardIDs: offeredCardIDs,
             requestedCardIDs: requestedCardIDs

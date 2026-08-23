@@ -1,3 +1,4 @@
+
 CREATE DATABASE vtcg;
 -- Connect to the database before running the rest
 
@@ -129,3 +130,4 @@ CREATE TABLE metadata (
     key TEXT PRIMARY KEY,
     value TEXT
 );
+

@@ -1,15 +1,25 @@
-// Shared card-picker UI used by wishlist.js's "Add Card" button.
+// Shared card-picker UI used by deck-editor.js and wishlist.js's "Add Card" buttons.
 // Visually reuses search.css's .card-grid/.card classes so the picker matches the
-// look of the search page.
-// TODO: deck-editor.js needs an "add from my collection" picker backed by
-// /collections (main-only, not merged into this branch yet - see deck-editor.js).
+// look of the search/collection pages.
 
+// Every card in the catalog, matching a name/set search (no ownership filter).
+// Used by the wishlist picker - you can wish for anything, owned or not.
 function searchAllCards(query) {
-    let url = query ? `/search?q=${encodeURIComponent(query)}` : "/search";
+    let url = `/search/product?q=${encodeURIComponent(query)}`;
     return fetch(url).then(response => {
         if (!response.ok) throw new Error("Failed to search cards");
         return response.json();
-    });
+    }).then(data => data.cards);
+}
+
+// Cards the current user owns, with how many of each. Used by the deck-editor
+// picker - deck quantities can't exceed what's here. /collections has no text
+// search yet (only game/set_name/rarity filters), so `query` is unused for now.
+function searchOwnedCards(query) {
+    return fetch("/collections").then(response => {
+        if (!response.ok) throw new Error("Failed to load collection");
+        return response.json();
+    }).then(data => data.cards.map(c => ({ ...c, cardId: c.id })));
 }
 
 // Renders a searchable card grid inside `container` and calls onPick(card) when the
@@ -69,6 +79,13 @@ function renderCardPicker(container, fetchCards, onPick) {
             meta.className = "meta";
             meta.textContent = card.set_name || "";
             content.appendChild(meta);
+
+            if (card.quantity !== undefined) {
+                let owned = document.createElement("div");
+                owned.className = "meta";
+                owned.textContent = `You own: ${card.quantity}`;
+                content.appendChild(owned);
+            }
 
             let pickBtn = document.createElement("button");
             pickBtn.type = "button";

@@ -54,10 +54,33 @@ function removeCard(cardId) {
         });
 }
 
+function addCardToDeck(card) {
+    let quantity = parseInt(window.prompt(`How many of "${card.name}" (you own ${card.quantity})?`, "1"), 10);
+    if (!quantity || quantity < 1) return;
+
+    fetch(`/api/decks/${deckId}/cards`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cardId: card.id, quantity }),
+    })
+        .then(response => {
+            if (!response.ok) return response.text().then(text => { throw new Error(text); });
+            return response.json();
+        })
+        .then(deck => {
+            currentDeck = deck;
+            cardPickerEl.style.display = "none";
+            statusMessage.textContent = "";
+            renderCards();
+        })
+        .catch(error => {
+            statusMessage.textContent = error.message || "Failed to add card.";
+            console.error("Error adding card:", error);
+        });
+}
+
 addCardBtn.addEventListener("click", () => {
-    // TODO: pick from the user's owned collection via /collections once that
-    // route merges in from main - deck cards can't exceed what the user owns.
-    statusMessage.textContent = "Adding cards needs the collections API, which lands after merging main.";
+    toggleCardPicker(cardPickerEl, searchOwnedCards, addCardToDeck);
 });
 
 loadDeck();

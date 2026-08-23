@@ -1,8 +1,15 @@
-let users = [
-    { id: 1, username: "testuser", tradableCards: 5 },
-    { id: 2, username: "user123", tradableCards: 10 },
-    { id: 3, username: "sampleuser", tradableCards: 3 }
-];
+let users = [];
+
+fetch("/trades/users")
+.then(response => {
+    return response.json();
+})
+.then(data => {
+    users = data;
+})
+.catch(error => {
+    console.error("Error loading trade users:", error);
+});
 
 let userSearchButton = document.getElementById("user-search-button");
 let cardSearchButton = document.getElementById("card-search-button");
@@ -39,7 +46,7 @@ userSearchInput.addEventListener("input", function() {
         username.textContent = user.username;
 
         let cardCount = document.createElement("p");
-        cardCount.textContent = `${user.tradableCards} tradable cards`;
+        cardCount.textContent = `${user.tradable_cards} tradable cards`;
 
         let tradeButton = document.createElement("button");
         tradeButton.textContent = "Start Trade";

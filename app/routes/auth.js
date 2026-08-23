@@ -1,60 +1,118 @@
-const express = require('express');
-const bcrypt = require('bcrypt');
-const { Pool } = require('pg');
+const express = require("express");
+const bcrypt = require("bcrypt");
 
-const router = express.Router();
+module.exports = function(pool, tokenStorage, makeToken, cookieOptions) {
+    const router = express.Router();
 
-const pool = new Pool({
-    user: process.env.DB_USER || 'postgres',
-    host: process.env.DB_HOST || 'localhost',
-    database: process.env.DB_NAME || 'vtcg',
-    password: process.env.DB_PASSWORD || 'your_password',
-    port: process.env.DB_PORT || 5432,
-});
-
-router.post('/register', async (req, res) => {
-    const { username, email, password } = req.body;
-    
-    try {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const query = 'INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3)';
-        
-        await pool.query(query, [username, email, hashedPassword]);
-        res.redirect('/login.html');
-    } catch (err) {
-        res.status(500).send("An error occurred during registration.");
-    }
-});
-
-router.post('/login', async (req, res) => {
-    const { email, password } = req.body;
-    
-    try {
-        const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-        
-        if (result.rows.length === 0) {
-            return res.redirect('/login.html?error=true');
+    function validateLogin(body) {
+        if (!body || typeof body !== "object") {
+            return false;
         }
-        
-        const user = result.rows[0];
-        const match = await bcrypt.compare(password, user.password_hash);
-        
-        if (match) {
-            req.session.userId = user.id;
-            req.session.username = user.username;
-            res.redirect('/dashboard.html'); 
-        } else {
-            res.redirect('/login.html?error=true');
-        }
-    } catch (err) {
-        res.status(500).send("An error occurred during login.");
-    }
-});
 
-router.get('/logout', (req, res) => {
-    req.session.destroy(() => {
-        res.redirect('/login.html');
+        const { email, password } = body;
+        return (typeof email === "string" && typeof password === "string" && email.length > 0 && password.length > 0);
+    }
+
+    router.post("/register", async (req, res) => {
+        if (!validateLogin(req.body)) {
+            return res.sendStatus(400);
+        }
+
+        const { username, email, password } = req.body;
+
+        let hash;
+
+        try {
+            hash = await bcrypt.hash(password, 10);
+        } catch (error) {
+            console.error("HASH FAILED", error);
+            return res.sendStatus(500);
+        }
+
+        try {
+            await pool.query("INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3)", [username, email, hash]);
+        } catch (error) {
+            console.error("INSERT FAILED", error);
+            return res.sendStatus(500);
+        }
+
+        return res.status(200).redirect('/dashboard.html');
     });
-});
 
-module.exports = router;
+    router.post("/login", async (req, res) => {
+        if (!validateLogin(req.body)) {
+            return res.sendStatus(400);
+        }
+
+        const { email, password } = req.body;
+
+        let result;
+
+        try {
+            result = await pool.query("SELECT id, username, email, password_hash FROM users WHERE email = $1", [email]);
+        } catch (error) {
+            console.error("SELECT FAILED", error);
+            return res.sendStatus(500);
+        }
+
+        if (result.rows.length === 0) {
+            return res.sendStatus(400);
+        }
+
+        const user = result.rows[0];
+
+        let verifyResult;
+
+        try {
+            verifyResult = await bcrypt.compare(password, user.password_hash);
+        } catch (error) {
+            console.error("VERIFY FAILED", error);
+            return res.sendStatus(500);
+        }
+
+        if (!verifyResult) {
+            return res.sendStatus(400);
+        }
+
+        const token = makeToken();
+
+        tokenStorage[token] = {
+            id: user.id,
+            username: user.username,
+            email: user.email
+        };
+
+        res.cookie("token", token, cookieOptions);
+
+        return res.status(200).redirect("/dashboard.html");
+    });
+
+    router.get("/logout", (req, res) => {
+        const { token } = req.cookies;
+
+        if (token === undefined) {
+            return res.sendStatus(400);
+        }
+
+        if (!Object.prototype.hasOwnProperty.call(tokenStorage, token)) {
+            return res.sendStatus(400);
+        }
+
+        delete tokenStorage[token];
+        res.clearCookie("token", cookieOptions);
+
+        return res.status(200).redirect("/login.html");
+    });
+
+    router.get("/me", (req, res) => {
+        const { token } = req.cookies;
+
+        if (!token || !Object.prototype.hasOwnProperty.call(tokenStorage, token)) {
+            return res.sendStatus(401);
+        }
+
+        return res.json(tokenStorage[token]);
+    });
+
+    return router;
+};

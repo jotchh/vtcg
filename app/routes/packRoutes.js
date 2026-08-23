@@ -84,7 +84,7 @@ module.exports = function (pool, env) {
   router.get("/", async (req, res) => {
     const client = await pool.connect();
 
-    const userId = req.session.userId ?? DEV_USER_ID;
+    const userId = req.user.id ?? DEV_USER_ID;
 
     try {
       await resetDailyOpensIfNeeded(client, userId);
@@ -117,7 +117,7 @@ module.exports = function (pool, env) {
       return res.status(400).send("game and set_name are required");
     }
 
-    const userId = req.session.userId ?? DEV_USER_ID;
+    const userId = req.user.id ?? DEV_USER_ID;
     const client = await pool.connect();
 
     try {
@@ -161,7 +161,7 @@ module.exports = function (pool, env) {
       return res.status(400).send(`Exactly ${SCRAP_COST} card ids are required to scrap`);
     }
 
-    const userId = req.session.userId ?? DEV_USER_ID;
+    const userId = req.user.id ?? DEV_USER_ID;
     const client = await pool.connect();
 
     try {

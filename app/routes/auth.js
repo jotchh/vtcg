@@ -36,7 +36,7 @@ module.exports = function(pool, tokenStorage, makeToken, cookieOptions) {
             return res.sendStatus(500);
         }
 
-        return res.status(200).redirect('/dashboard.html');
+        return res.status(200).redirect('/login.html');
     });
 
     router.post("/login", async (req, res) => {

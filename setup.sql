@@ -51,7 +51,8 @@ CREATE TABLE user_cards (
     pack_history_id INT REFERENCES pack_history(id),
 
     acquired_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    cnd VARCHAR(3) NOT NULL -- NM/LP/MP/HP/DMG
+    cnd VARCHAR(3) NOT NULL, -- NM/LP/MP/HP/DMG
+    is_tradable BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE friends (
@@ -81,10 +82,11 @@ CREATE TABLE trades (
     sender_id INT REFERENCES users(id),
     receiver_id INT REFERENCES users(id),
 
-    status VARCHAR(20) DEFAULT 'PENDING',
+    status VARCHAR(20) DEFAULT 'PENDING'
+        CHECK (status IN ('PENDING', 'COMPLETED', 'REJECTED', 'CANCELLED')),
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    completed_at TIMESTAMP
+    resolved_at TIMESTAMP
 );
 
 CREATE TABLE trade_cards (
@@ -93,7 +95,25 @@ CREATE TABLE trade_cards (
     trade_id INT REFERENCES trades(id) ON DELETE CASCADE,
     user_card_id INT REFERENCES user_cards(id),
 
-    offered_by INT REFERENCES users(id)
+    trade_side VARCHAR(10) NOT NULL
+        CHECK (trade_side IN ('OFFER', 'REQUEST')),
+
+    UNIQUE (trade_id, user_card_id)
+);
+
+CREATE TABLE trade_listings (
+    id SERIAL PRIMARY KEY,
+
+    user_card_id INT NOT NULL REFERENCES user_cards(id),
+    preferred_card_id INT REFERENCES cards(id),
+
+    note TEXT,
+
+    status VARCHAR(20) DEFAULT 'ACTIVE'
+        CHECK (status IN ('ACTIVE', 'CLOSED', 'FULFILLED')),
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    resolved_at TIMESTAMP
 );
 
 CREATE TABLE decks (

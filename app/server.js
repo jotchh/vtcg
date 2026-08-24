@@ -5,6 +5,7 @@ const { Pool } = require("pg");
 const env = require("../env.json");
 
 const createCardUpdateService = require("./services/cardUpdateService");
+const createDailyPackUpdateService = require("./services/dailyPackUpdateService");
 const searchRoutes = require("./routes/searchRoutes");
 const cardRoutes = require("./routes/cardRoutes");
 const packRoutes = require("./routes/packRoutes");
@@ -16,7 +17,7 @@ const HOURS_PER_DAY = 24;
 const MINUTES_PER_HOUR = 60;
 const SECONDS_PER_MINUTE = 60;
 const MILLISECONDS_PER_SECOND = 1000;
-let CARD_UPDATE_INTERVAL = HOURS_PER_DAY * MINUTES_PER_HOUR * SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND;
+let DAILY_UPDATE_INTERVAL = HOURS_PER_DAY * MINUTES_PER_HOUR * SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND;
 
 const app = express();
 const port = 3000;
@@ -24,6 +25,7 @@ const hostname = "localhost";
 const pool = new Pool(env.pool);
 
 const cardUpdateService = createCardUpdateService(pool, env);
+const dailyPackUpdateService = createDailyPackUpdateService(pool);
 
 const tokenStorage = {};
 
@@ -75,6 +77,7 @@ app.listen(port, hostname, async () => {
     console.log(`http://${hostname}:${port}`);
 
     await runCardUpdate();
-
-    setInterval(runCardUpdate, CARD_UPDATE_INTERVAL);
+    dailyPackUpdateService.updatePulls();
+    setInterval(runCardUpdate, DAILY_UPDATE_INTERVAL);
+    setInterval(() => dailyPackUpdateService.updatePulls(), DAILY_UPDATE_INTERVAL);
 });

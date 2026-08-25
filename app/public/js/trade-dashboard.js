@@ -17,6 +17,8 @@ let userSearchPanel = document.getElementById("user-search-panel");
 let cardSearchPanel = document.getElementById("card-search-panel");
 let userSearchInput = document.getElementById("user-search");
 let userResults = document.getElementById("user-results");
+let cardSearchInput = document.getElementById("card-search");
+let cardResults = document.getElementById("card-results");
 
 userSearchButton.addEventListener("click", function() {
     userSearchPanel.style.display = "block";
@@ -59,6 +61,65 @@ userSearchInput.addEventListener("input", function() {
         result.appendChild(cardCount);
         result.appendChild(tradeButton);
         userResults.appendChild(result);
+    });
+});
+
+cardSearchInput.addEventListener("input", function() {
+    let searchText = cardSearchInput.value.trim();
+
+    while (cardResults.firstChild) {
+        cardResults.removeChild(cardResults.firstChild);
+    }
+
+    if (searchText === "") {
+        return;
+    }
+
+    fetch(`/trades/search-cards?search=${searchText}`)
+    .then(response => {
+        return response.json();
+    })
+    .then(data => {
+        for (let i = 0; i < data.length; i++) {
+            let card = data[i];
+
+            let result = document.createElement("div");
+
+            let image = document.createElement("img");
+            image.src = card.img_url;
+            image.alt = card.name;
+
+            let cardName = document.createElement("p");
+            cardName.textContent = card.name;
+
+            let owner = document.createElement("p");
+            owner.textContent = `Owned by: ${card.username}`;
+
+            let setName = document.createElement("p");
+            setName.textContent = card.set_name;
+
+            let copyCount = document.createElement("p");
+            copyCount.textContent = `${card.tradable_copies} tradable copies`;
+
+            let tradeButton = document.createElement("button");
+            tradeButton.textContent = "Start Trade";
+
+            tradeButton.addEventListener("click", function() {
+                window.location.href = `create-trade.html?userId=${card.user_id}`;
+            });
+
+            result.appendChild(image);
+            result.appendChild(cardName);
+            result.appendChild(owner);
+            result.appendChild(setName);
+            result.appendChild(copyCount);
+            result.appendChild(tradeButton);
+
+            cardResults.appendChild(result);
+        }
+    })
+    .catch(error => {
+        console.error("Error searching trade cards:", error);
     });
 });
 

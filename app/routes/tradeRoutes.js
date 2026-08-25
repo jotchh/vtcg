@@ -23,6 +23,48 @@ module.exports = function(pool) {
                 res.status(500).send("Error loading users");
             });
     });
+    
+    router.get("/search-cards", async (req, res) => {
+        let currentUserID = req.user.id;
+        let search = req.query.search;
+
+        if (!search) {
+            return res.json([]);
+        }
+        
+        try {
+            let result = await pool.query(`
+                SELECT users.id AS user_id,
+                users.username,
+                cards.id AS card_id,
+                cards.name,
+                cards.game,
+                cards.set_name,
+                cards.rarity,
+                cards.img_url,
+                COUNT(user_cards.id) AS tradable_copies
+                FROM user_cards
+                JOIN users ON user_cards.user_id = users.id
+                JOIN cards ON user_cards.card_id = cards.id
+                WHERE user_cards.is_tradable = TRUE
+                AND users.id != $1
+                AND cards.name ILIKE $2
+                GROUP BY
+                users.id,
+                users.username,
+                cards.id,
+                cards.name,
+                cards.game,
+                cards.set_name,
+                cards.rarity,
+                cards.img_url
+                ORDER BY cards.name, users.username;`, [currentUserID, `%${search}%`]);
+                res.json(result.rows);
+            } catch (error) {
+                console.error("Error searching tradable cards:", error);
+                res.status(500).send("Error searching tradable cards");
+        }
+    });
 
     router.get("/users/:userID/cards", (req, res) => {
         let currentUserID = req.user.id;

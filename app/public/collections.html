@@ -9,7 +9,23 @@
     <link rel="stylesheet" href="./css/collections.css">
 </head>
 <body>
-    <h1>VTCG Collection</h1>
+    <header class="dashboard-header">
+        <a href="/dashboard.html" class="logo">VTCG</a>
+
+        <nav class="main-nav">
+            <a href="/packs.html">Packs</a>
+            <a href="/search.html">Cards</a>
+            <a href="/collections.html">Collection</a>
+            <a href="/trade-dashboard.html">Trades</a>
+        </nav>
+
+        <div class="user-menu">
+            <span id="username"></span>
+            <a href="/login.html" id="auth-link">Login</a>
+        </div>
+    </header>
+
+    <h1>Collection</h1>
     <p>Browse all the cards you own.</p>
 
     <form id="filter-form" class="search-controls">

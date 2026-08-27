@@ -101,7 +101,7 @@ module.exports = function(pool, tokenStorage, makeToken, cookieOptions) {
         delete tokenStorage[token];
         res.clearCookie("token", cookieOptions);
 
-        return res.status(200).redirect("/login.html");
+        return res.status(200).redirect("/index.html");
     });
 
     router.get("/me", (req, res) => {

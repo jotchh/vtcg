@@ -6,26 +6,33 @@
 
     <title>Create Trade</title>
 
+    <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/trade.css">
+    <script src="js/global.js" defer></script>
     <script src="js/create-trade.js" defer></script>
 </head>
 
 <body>
-    <header>
-        <nav>
-            <a href="dashboard.html">Home</a>
-            <a href="card.html">Cards</a>
-            <a href="collections.html">Collection</a>
-            <a href="trade-dashboard.html">Trades</a>
-            <a href="login.html">Login</a>
+    <header class="dashboard-header">
+        <a href="/dashboard.html" class="logo">VTCG</a>
+
+        <nav class="main-nav">
+            <a href="/packs.html">Packs</a>
+            <a href="/search.html">Cards</a>
+            <a href="/collections.html">Collection</a>
+            <a href="/trade-dashboard.html">Trades</a>
         </nav>
+
+        <div class="user-menu">
+            <span id="username"></span>
+            <a href="/login.html" id="auth-link">Login</a>
+        </div>
     </header>
 
     <main>
         <section class="trade-header">
             <h1>Create Trade</h1>
-            <!-- Filler username -->
-            <p>Trading with:<strong id="trade-partner-name">Loading...</strong></p>
+            <p>Trading with: <strong id="trade-partner-name">Loading...</strong></p>
         </section>
 
         <section class="trade-card-selection">
@@ -35,8 +42,7 @@
                 
                 <div class="card-slider-container">
                     <button id="your-scroll-left" type="button" class="scroll-button">&lt;</button>
-                    
-                    <!-- Add user cards here -->
+                
                     <div id="your-card-list" class="card-slider"></div>
 
                     <button id="your-scroll-right" type="button" class="scroll-button">&gt;</button>
@@ -52,9 +58,7 @@
                 <div class="card-slider-container">
                     <button id="their-scroll-left" type="button" class="scroll-button">&lt;</button>
 
-                    <div id="their-card-list" class="card-slider">
-                        <!-- Add partner cards here -->
-                    </div>
+                    <div id="their-card-list" class="card-slider"></div>
 
                     <button id="their-scroll-right" type="button" class="scroll-button">&gt;</button>
                 </div>

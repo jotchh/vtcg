@@ -1,1 +1,422 @@
-/* Trade page styles */
+.trade-dashboard {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 30px;
+}
+
+.trade-dashboard h1 {
+    margin: 0 0 45px;
+    font-size: 2.6rem;
+}
+
+.trade-dashboard h2 {
+    margin: 0 0 20px;
+    font-size: 1.5rem;
+}
+
+.start-trade,
+.my-trades {
+    margin-bottom: 45px;
+}
+
+.trade-search-options {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.trade-search-options button {
+    padding: 10px 18px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.trade-search-options button:hover {
+    color: var(--text);
+    background: var(--surface-hover);
+    border-color: #555;
+}
+
+.trade-search-options button.active {
+    background: #222;
+    color: var(--text);
+    border-color: #777;
+}
+
+.trade-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 20px;
+}
+
+.trade-tabs button {
+    padding: 11px 20px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.trade-tabs button:first-child {
+    border-radius: 8px 0 0 8px;
+}
+
+.trade-tabs button:last-child {
+    border-radius: 0 8px 8px 0;
+}
+
+.trade-tabs button + button {
+    border-left: 0;
+}
+
+.trade-tabs button:hover {
+    color: var(--text);
+    background: var(--surface-hover);
+}
+
+.trade-tabs button.active {
+    background: var(--surface-hover);
+    color: var(--text);
+    border-color: #555;
+}
+
+.search-panel {
+    padding: 28px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+}
+
+.search-panel label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.search-panel input,
+.search-panel select {
+    box-sizing: border-box;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--background);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.95rem;
+    outline: none;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.search-panel input {
+    width: 100%;
+}
+
+.search-panel input::placeholder {
+    color: var(--text-muted);
+}
+
+.search-panel input:focus,
+.search-panel select:focus {
+    border-color: #666;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
+}
+
+.card-filters {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.search-results,
+.listing-results {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.search-result,
+.card-result,
+.trade-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 16px 18px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--background);
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
+
+.search-result:hover,
+.card-result:hover,
+.trade-item:hover {
+    transform: translateY(-2px);
+    border-color: #555;
+    background: var(--surface-hover);
+}
+
+.search-result h3,
+.card-result h3,
+.trade-item h3 {
+    margin: 0 0 5px;
+    font-size: 1rem;
+}
+
+.search-result p,
+.card-result p,
+.trade-item p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.search-result button,
+.card-result button {
+    flex-shrink: 0;
+    padding: 9px 16px;
+    border: 1px solid #555;
+    border-radius: 7px;
+    background: var(--surface);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.search-result button:hover,
+.card-result button:hover {
+    background: var(--surface-hover);
+    border-color: #777;
+    transform: translateY(-1px);
+}
+
+.search-result button:active,
+.card-result button:active {
+    transform: translateY(0);
+}
+
+.trade-item button {
+    padding: 9px 16px;
+    border: 1px solid #555;
+    border-radius: 7px;
+    background: var(--surface);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.trade-item button:hover {
+    background: var(--surface-hover);
+    border-color: #777;
+}
+
+.card-slider {
+    display: flex;
+    gap: 12px;
+    min-width: 0;
+    flex: 1;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.card-slider::-webkit-scrollbar {
+    display: none;
+}
+
+.trade-card {
+    flex: 0 0 110px;
+}
+
+.paging {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.paging button {
+    padding: 9px 16px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--surface);
+    color: var(--text-secondary);
+    font-family: inherit;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.paging button:hover:not(:disabled) {
+    background: var(--surface-hover);
+    color: var(--text);
+    border-color: #555;
+}
+
+.paging button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+#page-number {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.my-trades {
+    margin-bottom: 0;
+}
+
+#trade-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.trade-item {
+    min-height: 70px;
+}
+
+#user-search-button,
+#card-search-button {
+    padding: 10px 18px;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    background: var(--surface);
+    color: var(--text-secondary);
+
+    font-size: 0.9rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+#user-search-button:hover,
+#card-search-button:hover {
+    background: var(--surface-hover);
+    border-color: #555;
+    color: var(--text);
+}
+
+#user-search-button.active,
+#card-search-button.active {
+    background: #222;
+    border-color: #777;
+    color: var(--text);
+}
+
+#user-results button,
+#card-results button {
+    padding: 8px 14px;
+
+    border: 1px solid var(--border);
+    border-radius: 7px;
+
+    background: var(--surface);
+    color: var(--text-secondary);
+
+    font-size: 0.85rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+#user-results button:hover,
+#card-results button:hover {
+    background: var(--surface-hover);
+    border-color: #666;
+    color: var(--text);
+}
+
+@media (max-width: 750px) {
+    .trade-dashboard {
+        padding: 40px 20px;
+    }
+
+    .trade-dashboard h1 {
+        font-size: 2rem;
+        margin-bottom: 35px;
+    }
+
+    .search-panel {
+        padding: 20px;
+    }
+
+    .card-filters {
+        grid-template-columns: 1fr;
+    }
+
+    .trade-search-options,
+    .trade-tabs {
+        width: 100%;
+    }
+
+    .trade-search-options button,
+    .trade-tabs button {
+        flex: 1;
+        padding: 11px 12px;
+    }
+
+    .search-result,
+    .card-result,
+    .trade-item {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .search-result button,
+    .card-result button {
+        width: 100%;
+    }
+}

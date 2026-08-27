@@ -1,14 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Packs</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+    <title>VTCG - Packs</title>
+    <style> 
+        table { width: 100%; border-collapse: collapse; }
         tr, th, td {
             border: 1px solid #777;
             padding: 8px;
@@ -16,47 +14,66 @@
         }
     </style>
     <link rel="stylesheet" href="./css/global.css">
+    <link rel="stylesheet" href="./css/search.css">
 </head>
+
 <body>
-      <header class="dashboard-header">
+    <header class="dashboard-header">
         <a href="/dashboard.html" class="logo">VTCG</a>
+    <nav class="main-nav">
+        <a href="/packs.html">Packs</a>
+        <a href="/search.html">Cards</a>
+        <a href="/collections.html">Collection</a>
+        <a href="/trade-dashboard.html">Trades</a>
+        <a href="/decks.html">Deck Builder</a>
+    </nav>
 
-        <nav class="main-nav">
-            <a href="/packs.html">Packs</a>
-            <a href="/search.html">Cards</a>
-            <a href="/collections.html">Collection</a>
-            <a href="/trade-dashboard.html">Trades</a>
-        </nav>
+    <div class="user-menu">
+        <span id="username"></span>
+        <a href="/login.html" id="auth-link">Login</a>
+    </div>
+</header>
 
-        <div class="user-menu">
-            <span id="username"></span>
-            <a href="/login.html" id="auth-link">Login</a>
-        </div>
-    </header>
-
-    <h1>Packs</h1>
-    <p>Open a pack to pull new cards.</p>
+<main class="search-page">
+    <section class="page-header">
+        <p class="eyebrow">Card Packs</p>
+        <h1>Packs</h1>
+        <p>Open a pack to pull new cards.</p>
+    </section>
 
     <p id="opens-remaining"></p>
 
-    <form id="open-form">
-        <div>
+    <form id="open-form" class="search-controls">
+        <div class="search-field">
             <label for="game-select">Game</label>
             <select id="game-select"></select>
         </div>
-        <div>
+
+        <div class="search-field">
             <label for="set-select">Set</label>
             <select id="set-select"></select>
         </div>
-        <button type="submit" id="open-btn">Open Pack</button>
+
+        <button
+            type="submit"
+            id="open-btn"
+            style="
+                cursor: pointer;
+                padding: 0.7rem 1.25rem;
+                border: 1px solid #ccc;
+                border-radius: 6px;
+                background: #222;
+                color: #fff;
+                font-weight: 600;
+                transition: transform 0.15s ease, box-shadow 0.15s ease;
+            "
+        >
+        Open Pack
+        </button>
     </form>
 
-    <!--
-    TODO: add option to scrap 10 cards for +1 pack open. Must wait until collection is complete to implement, so there is a way to validate # of cards
-    -->
-    
-    <hr>
-    <p id="status-message"></p>
+    <p id="status-message" class="query-message"></p>
+
     <table id="results-table">
         <thead>
             <tr>
@@ -69,6 +86,9 @@
         </thead>
         <tbody id="pulled-cards"></tbody>
     </table>
+</main>
+
+<script src="./js/global.js"></script>
+<script src="./js/packs.js"></script>
 </body>
-<script src="js/packs.js"></script>
 </html>

@@ -1,20 +1,50 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Decks - VTCG</title>
-    <link rel="stylesheet" href="css/decks.css">
+    <link rel="stylesheet" href="./css/global.css">
+    <link rel="stylesheet" href="./css/search.css">
+    <link rel="stylesheet" href="./css/decks.css">
 </head>
+
 <body>
-    <div class="top-bar">
+    <header class="dashboard-header">
+        <a href="/dashboard.html" class="logo">VTCG</a>
+
+    <nav class="main-nav">
+        <a href="/packs.html">Packs</a>
+        <a href="/search.html">Cards</a>
+        <a href="/collections.html">Collection</a>
+        <a href="/trade-dashboard.html">Trades</a>
+        <a href="/decks.html">Deck Builder</a>
+    </nav>
+
+    <div class="user-menu">
+        <span id="username"></span>
+        <a href="/login.html" id="auth-link">Login</a>
+    </div>
+</header>
+
+<main class="search-page">
+    <section class="page-header">
+        <p class="eyebrow">Deck Builder</p>
         <h1>My Decks</h1>
+        <p>Build decks from the cards you own.</p>
+    </section>
+
+    <div class="deck-actions">
         <button id="new-deck-btn">+ New Deck</button>
     </div>
-    <p>Build decks from the cards you own.</p>
 
     <p id="status-message" class="hint"></p>
+
     <ul class="deck-list" id="deck-list"></ul>
+</main>
+
+<script src="./js/global.js"></script>
+<script src="./js/decks.js"></script>
 </body>
-<script src="js/decks.js"></script>
 </html>

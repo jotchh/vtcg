@@ -1,0 +1,421 @@
+main {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 60px 30px;
+    box-sizing: border-box;
+}
+
+.trade-header {
+    margin-bottom: 40px;
+}
+
+.trade-header h1 {
+    margin: 0 0 10px;
+    font-size: 2.6rem;
+}
+
+.trade-header p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+}
+
+.trade-header strong {
+    color: var(--text);
+}
+
+.trade-card-selection {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.collection-section {
+    min-width: 0;
+    padding: 25px;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    background: var(--surface);
+}
+
+.collection-section h2 {
+    margin: 0 0 15px;
+    font-size: 1.25rem;
+}
+
+.collection-section input {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 11px 13px;
+    margin-bottom: 20px;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    outline: none;
+
+    background: var(--background);
+    color: var(--text);
+
+    font-size: 0.95rem;
+
+    transition: border-color 0.2s ease;
+}
+
+.collection-section input::placeholder {
+    color: var(--text-muted);
+}
+
+.collection-section input:focus {
+    border-color: #666;
+}
+
+.card-slider-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    min-width: 0;
+}
+
+.card-slider {
+    display: flex;
+    gap: 12px;
+
+    flex: 1;
+    min-width: 0;
+
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.card-slider::-webkit-scrollbar {
+    display: none;
+}
+
+.trade-card {
+    flex: 0 0 calc((100% - 24px) / 3);
+    min-width: 0;
+
+    box-sizing: border-box;
+
+    padding: 8px;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    background: var(--background);
+}
+
+.trade-card img {
+    display: block;
+
+    width: 100%;
+    aspect-ratio: 2.5 / 3.5;
+
+    object-fit: cover;
+
+    border-radius: 5px;
+}
+
+.trade-card p {
+    margin: 6px 2px;
+
+    color: var(--text-secondary);
+
+    font-size: 0.8rem;
+    line-height: 1.3;
+
+    text-align: center;
+}
+
+.trade-card button {
+    width: 100%;
+
+    margin-top: 8px;
+    padding: 8px 10px;
+
+    border: 1px solid var(--border);
+    border-radius: 6px;
+
+    background: var(--surface);
+    color: var(--text-secondary);
+
+    font-size: 0.8rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.trade-card button:hover {
+    background: var(--surface-hover);
+    border-color: #666;
+    color: var(--text);
+}
+
+.scroll-button {
+    flex-shrink: 0;
+
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    background: var(--background);
+    color: var(--text-secondary);
+
+    font-size: 1.2rem;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.scroll-button:hover {
+    background: var(--surface-hover);
+    border-color: #555;
+    color: var(--text);
+}
+
+.scroll-button:active {
+    transform: scale(0.95);
+}
+
+.scroll-button:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+
+.scroll-button:disabled:hover {
+    background: var(--background);
+    border-color: var(--border);
+    color: var(--text-secondary);
+}
+
+.trade-summary {
+    margin-bottom: 30px;
+    padding: 25px;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    background: var(--surface);
+}
+
+.trade-summary > h2 {
+    margin: 0 0 20px;
+    font-size: 1.25rem;
+}
+
+.trade-summary-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.offer-summary,
+.request-summary {
+    min-height: 150px;
+
+    padding: 20px;
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    background: var(--background);
+}
+
+.offer-summary h3,
+.request-summary h3 {
+    margin: 0 0 15px;
+    font-size: 1rem;
+}
+
+.empty-message {
+    margin: 0;
+
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+#offered-cards,
+#requested-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.summary-card {
+    width: 100px;
+
+    padding: 8px;
+
+    box-sizing: border-box;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    background: var(--surface);
+}
+
+.summary-card p {
+    margin: 5px 0;
+
+    color: var(--text-secondary);
+
+    font-size: 0.8rem;
+    text-align: center;
+}
+
+.summary-card button {
+    width: 100%;
+
+    margin-top: 5px;
+    padding: 6px;
+
+    border: 1px solid var(--border);
+    border-radius: 6px;
+
+    background: var(--background);
+    color: var(--text-secondary);
+
+    font-size: 0.75rem;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.summary-card button:hover {
+    background: var(--surface-hover);
+    border-color: #555;
+    color: var(--text);
+}
+
+.trade-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.trade-message {
+    flex: 1;
+
+    margin: 0;
+
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.trade-actions a {
+    padding: 10px 18px;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    background: var(--surface);
+    color: var(--text-secondary);
+
+    text-decoration: none;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.trade-actions a:hover {
+    background: var(--surface-hover);
+    border-color: #555;
+    color: var(--text);
+}
+
+#submit-trade {
+    padding: 10px 20px;
+
+    border: 1px solid #777;
+    border-radius: 8px;
+
+    background: #222;
+    color: var(--text);
+
+    font-size: 0.95rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+#submit-trade:hover {
+    background: #2a2a2a;
+    border-color: #999;
+    transform: translateY(-2px);
+}
+
+#submit-trade:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+@media (max-width: 850px) {
+    main {
+        padding: 40px 20px;
+    }
+
+    .trade-header h1 {
+        font-size: 2rem;
+    }
+
+    .trade-card-selection,
+    .trade-summary-columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 500px) {
+    .trade-actions {
+        flex-wrap: wrap;
+    }
+
+    .trade-message {
+        flex-basis: 100%;
+    }
+
+    .trade-actions a,
+    #submit-trade {
+        flex: 1;
+        text-align: center;
+    }
+}

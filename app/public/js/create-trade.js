@@ -236,3 +236,41 @@ function displayOfferedCards() {
         offeredCardsList.appendChild(offeredCard);
     }
 };
+
+let yourScrollLeft = document.getElementById("your-scroll-left");
+let yourScrollRight = document.getElementById("your-scroll-right");
+
+let theirScrollLeft = document.getElementById("their-scroll-left");
+let theirScrollRight = document.getElementById("their-scroll-right");
+
+function scrollCards(list, direction) {
+    let card = list.querySelector(".trade-card");
+
+    if (!card) {
+        return;
+    }
+
+    let cardWidth = card.offsetWidth;
+    let gap = parseInt(getComputedStyle(list).gap) || 0;
+
+    list.scrollBy({
+        left: direction * (cardWidth + gap),
+        behavior: "smooth"
+    });
+}
+
+yourScrollLeft.addEventListener("click", function() {
+    scrollCards(yourCardList, -1);
+});
+
+yourScrollRight.addEventListener("click", function() {
+    scrollCards(yourCardList, 1);
+});
+
+theirScrollLeft.addEventListener("click", function() {
+    scrollCards(theirCardList, -1);
+});
+
+theirScrollRight.addEventListener("click", function() {
+    scrollCards(theirCardList, 1);
+});

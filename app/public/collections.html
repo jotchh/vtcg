@@ -1,49 +1,56 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Collection</title>
+    <title>VTCG - Collection</title>
     <link rel="stylesheet" href="./css/global.css">
     <link rel="stylesheet" href="./css/search.css">
     <link rel="stylesheet" href="./css/collections.css">
 </head>
+
 <body>
     <header class="dashboard-header">
         <a href="/dashboard.html" class="logo">VTCG</a>
 
-        <nav class="main-nav">
-            <a href="/packs.html">Packs</a>
-            <a href="/search.html">Cards</a>
-            <a href="/collections.html">Collection</a>
-            <a href="/trade-dashboard.html">Trades</a>
-        </nav>
+    <nav class="main-nav">
+        <a href="/packs.html">Packs</a>
+        <a href="/search.html">Cards</a>
+        <a href="/collections.html">Collection</a>
+        <a href="/trade-dashboard.html">Trades</a>
+        <a href="/decks.html">Deck Builder</a>
+    </nav>
 
-        <div class="user-menu">
-            <span id="username"></span>
-            <a href="/login.html" id="auth-link">Login</a>
-        </div>
-    </header>
+    <div class="user-menu">
+        <span id="username"></span>
+        <a href="/login.html" id="auth-link">Login</a>
+    </div>
+</header>
 
-    <h1>Collection</h1>
-    <p>Browse all the cards you own.</p>
+<main class="search-page">
+    <section class="page-header">
+        <p class="eyebrow">Your Cards</p>
+        <h1>Collection</h1>
+        <p>Browse all the cards you own.</p>
+    </section>
 
     <form id="filter-form" class="search-controls">
-        <div>
+        <div class="search-field">
             <label for="game-select">Game</label>
             <select id="game-select">
                 <option value="">All Games</option>
             </select>
         </div>
 
-        <div>
+        <div class="search-field">
             <label for="set-select">Set</label>
             <select id="set-select">
                 <option value="">All Sets</option>
             </select>
         </div>
 
-        <div>
+        <div class="search-field">
             <label for="rarity-select">Rarity</label>
             <select id="rarity-select">
                 <option value="">All Rarities</option>
@@ -57,16 +64,19 @@
         <button type="submit" id="submit">Filter</button>
     </form>
 
-    <hr>
-    <div id="query-message"></div>
+    <div id="query-message" class="query-message"></div>
 
-    <div id="collection-results" class="card-grid"></div>
+    <section id="collection-results" class="card-grid"></section>
 
     <div class="pagination">
         <button id="prev-page">Previous</button>
         <span id="page-info"></span>
         <button id="next-page">Next</button>
     </div>
+</main>
+
+<script src="./js/global.js"></script>
+<script src="./js/collections.js"></script>
+
 </body>
-<script src="js/collections.js"></script>
 </html>

@@ -1,9 +1,7 @@
-/* Decks/wishlist-specific layout. Cards a deck/wishlist holds reuse search.css's
-   .card-grid/.card (via cardPicker.js's renderCardTile), same as search/collections. */
-
-.hint {
-    color: #777;
-    font-size: 0.9rem;
+.decks-page {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 50px 30px;
 }
 
 .top-bar {
@@ -11,44 +9,142 @@
     justify-content: space-between;
     align-items: center;
     gap: 15px;
+    margin-bottom: 8px;
 }
 
-/* The list of a user's decks (names, not cards) stays a plain row list. */
+.top-bar h1 {
+    margin: 0;
+    font-size: 2.4rem;
+}
+
+.decks-page > p {
+    color: var(--text-secondary);
+}
+
+.hint {
+    min-height: 24px;
+    margin: 15px 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Buttons */
+
+#new-deck-btn,
+#add-card-btn,
+#new-deck-form button {
+    height: 42px;
+    padding: 0 18px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+#new-deck-btn:hover,
+#add-card-btn:hover,
+#new-deck-form button:hover {
+    background: var(--surface-hover);
+    border-color: #555;
+    transform: translateY(-1px);
+}
+
+/* Deck list */
+
 .deck-list {
     list-style: none;
-    margin: 20px 0;
+    margin: 25px 0;
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 
 .deck-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 15px;
-    padding: 12px 15px;
+    gap: 20px;
+    padding: 18px 20px;
+    border: 1px solid var(--border);
     border-radius: 10px;
-    /* border/background intentionally omitted here - will pick up the
-       shared theme (global.css) once josh.generalUiFix merges in */
+    background: var(--surface);
+    color: var(--text);
+    transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+}
+
+.deck-row:hover {
+    border-color: #555;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
 }
 
 .deck-info {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 5px;
+    min-width: 0;
+}
+
+.deck-info a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.deck-info a:hover {
+    text-decoration: underline;
+}
+
+.deck-info span {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
 }
 
 .deck-actions {
     display: flex;
     gap: 8px;
+    flex-shrink: 0;
 }
 
-/* Quantity badge on a deck/wishlist card tile. Positioning rule is ours (this
-   page's card-grid ids); .quantity-badge itself is intentionally identical to
-   collections.css's rule of the same name - if that one changes, update this
-   one to match, since decks.html/wishlist.html never load collections.css. */
+.deck-actions button {
+    height: 36px;
+    padding: 0 14px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.deck-actions button:hover {
+    background: var(--surface-hover);
+    border-color: #555;
+}
+
+/* Back link */
+
+.decks-page .back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: var(--text-secondary);
+    text-decoration: none;
+}
+
+.decks-page .back-link:hover {
+    color: var(--text);
+}
+
+/* Deck cards */
+
 #deck-cards .card,
 #wishlist-cards .card {
     position: relative;
@@ -64,4 +160,95 @@
     font-weight: bold;
     padding: 2px 8px;
     border-radius: 999px;
+}
+
+/* Card picker */
+
+#card-picker {
+    margin: 20px 0 30px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+}
+
+/* New deck form */
+
+#new-deck-form {
+    max-width: 500px;
+    margin-top: 25px;
+    padding: 25px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+}
+
+#new-deck-form div {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+#new-deck-form label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+#new-deck-form input {
+    height: 42px;
+    padding: 0 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--background);
+    color: var(--text);
+    font: inherit;
+    box-sizing: border-box;
+}
+
+#new-deck-form input:focus {
+    outline: none;
+    border-color: #666;
+}
+
+#new-deck-form button {
+    margin-top: 5px;
+}
+
+/* Responsive */
+
+@media (max-width: 650px) {
+    .decks-page {
+        padding: 35px 20px;
+    }
+
+    .top-bar {
+        align-items: flex-start;
+    }
+
+    .top-bar h1 {
+        font-size: 2rem;
+    }
+
+    .deck-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .deck-actions {
+        width: 100%;
+    }
+
+    .deck-actions button {
+        flex: 1;
+    }
+
+    #new-deck-btn,
+    #add-card-btn {
+        padding: 0 14px;
+    }
+
+    #new-deck-form {
+        padding: 20px;
+    }
 }

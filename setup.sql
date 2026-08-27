@@ -52,7 +52,7 @@ CREATE TABLE user_cards (
 
     acquired_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     cnd VARCHAR(3) NOT NULL, -- NM/LP/MP/HP/DMG
-    is_tradable BOOLEAN DEFAULT FALSE
+    is_tradable BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE friends (

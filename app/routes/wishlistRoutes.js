@@ -26,30 +26,47 @@ module.exports = function (pool) {
   }
 
   router.get("/", async (req, res) => {
-    const userId = req.user.id ?? DEV_USER_ID;
-    res.status(200).json(await getWishlistRows(userId));
+    try {
+      const userId = req.user.id ?? DEV_USER_ID;
+      res.status(200).json(await getWishlistRows(userId));
+    } catch (error) {
+      console.error("Error loading wishlist:", error);
+      res.status(500).send("Error loading wishlist");
+    }
   });
 
+  // Sets this card's wishlist quantity to an absolute total (matches the
+  // "how many do you want" UI) - not an increment.
   router.post("/", async (req, res) => {
-    const userId = req.user.id ?? DEV_USER_ID;
-    let { cardId, quantity } = req.body;
+    try {
+      const userId = req.user.id ?? DEV_USER_ID;
+      let { cardId, quantity } = req.body;
 
-    await pool.query(
-      `INSERT INTO wishlist_cards (user_id, card_id, quantity) VALUES ($1, $2, $3)
-       ON CONFLICT (user_id, card_id) DO UPDATE SET quantity = $3`,
-      [userId, cardId, quantity || 1]
-    );
+      await pool.query(
+        `INSERT INTO wishlist_cards (user_id, card_id, quantity) VALUES ($1, $2, $3)
+         ON CONFLICT (user_id, card_id) DO UPDATE SET quantity = $3`,
+        [userId, cardId, quantity || 1]
+      );
 
-    res.status(200).json(await getWishlistRows(userId));
+      res.status(200).json(await getWishlistRows(userId));
+    } catch (error) {
+      console.error("Error adding card to wishlist:", error);
+      res.status(500).send("Error adding card to wishlist");
+    }
   });
 
   router.delete("/:cardId", async (req, res) => {
-    const userId = req.user.id ?? DEV_USER_ID;
-    await pool.query(
-      "DELETE FROM wishlist_cards WHERE user_id = $1 AND card_id = $2",
-      [userId, parseInt(req.params.cardId, 10)]
-    );
-    res.status(200).json(await getWishlistRows(userId));
+    try {
+      const userId = req.user.id ?? DEV_USER_ID;
+      await pool.query(
+        "DELETE FROM wishlist_cards WHERE user_id = $1 AND card_id = $2",
+        [userId, parseInt(req.params.cardId, 10)]
+      );
+      res.status(200).json(await getWishlistRows(userId));
+    } catch (error) {
+      console.error("Error removing card from wishlist:", error);
+      res.status(500).send("Error removing card from wishlist");
+    }
   });
 
   return router;

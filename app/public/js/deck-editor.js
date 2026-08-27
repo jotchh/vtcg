@@ -5,7 +5,7 @@ let deckNameEl = document.getElementById("deck-name");
 let statusMessage = document.getElementById("status-message");
 let addCardBtn = document.getElementById("add-card-btn");
 let cardPickerEl = document.getElementById("card-picker");
-let cardList = document.getElementById("card-list");
+let deckCardsEl = document.getElementById("deck-cards");
 
 let currentDeck = null;
 
@@ -27,19 +27,12 @@ function renderDeck() {
 }
 
 function renderCards() {
-    cardList.replaceChildren();
-
-    if (currentDeck.cards.length === 0) {
-        let empty = document.createElement("li");
-        empty.className = "hint";
-        empty.textContent = "No cards yet. Click \"Add Card\" to start building this deck.";
-        cardList.appendChild(empty);
-        return;
-    }
-
-    for (let card of currentDeck.cards) {
-        cardList.appendChild(renderCardRow(card, removeCard));
-    }
+    renderCardGrid(
+        deckCardsEl,
+        currentDeck.cards,
+        "No cards yet. Click \"Add Card\" to start building this deck.",
+        removeCard
+    );
 }
 
 function removeCard(cardId) {

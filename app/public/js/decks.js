@@ -59,8 +59,12 @@ function renderDecks(decks) {
 
 function deleteDeck(deckId) {
     fetch(`/api/decks/${deckId}`, { method: "DELETE" })
-        .then(() => loadDecks())
+        .then(response => {
+            if (!response.ok) throw new Error("Failed to delete deck");
+            return loadDecks();
+        })
         .catch(error => {
+            statusMessage.textContent = "Failed to delete deck.";
             console.error("Error deleting deck:", error);
         });
 }

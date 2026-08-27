@@ -1,4 +1,4 @@
-let cardList = document.getElementById("card-list");
+let wishlistCardsEl = document.getElementById("wishlist-cards");
 let statusMessage = document.getElementById("status-message");
 let addCardBtn = document.getElementById("add-card-btn");
 let cardPickerEl = document.getElementById("card-picker");
@@ -15,19 +15,7 @@ function loadWishlist() {
 }
 
 function renderWishlist(cards) {
-    cardList.replaceChildren();
-
-    if (cards.length === 0) {
-        let empty = document.createElement("li");
-        empty.className = "hint";
-        empty.textContent = "Your wishlist is empty.";
-        cardList.appendChild(empty);
-        return;
-    }
-
-    for (let card of cards) {
-        cardList.appendChild(renderCardRow(card, removeCard));
-    }
+    renderCardGrid(wishlistCardsEl, cards, "Your wishlist is empty.", removeCard);
 }
 
 function removeCard(cardId) {

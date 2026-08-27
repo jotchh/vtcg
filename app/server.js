@@ -12,6 +12,8 @@ const packRoutes = require("./routes/packRoutes");
 const collectionRoutes = require("./routes/collectionRoutes");
 const authRoutes = require("./routes/auth");
 const tradeRoutes = require("./routes/tradeRoutes");
+const decksRoutes = require("./routes/decksRoutes");
+const wishlistRoutes = require("./routes/wishlistRoutes");
 
 const HOURS_PER_DAY = 24;
 const MINUTES_PER_HOUR = 60;
@@ -35,7 +37,7 @@ function makeToken() {
 
 const cookieOptions = {
     httpOnly: true,
-    secure: false, 
+    secure: false,
     sameSite: "strict"
 };
 
@@ -72,6 +74,8 @@ app.use("/card", cardRoutes(pool));
 app.use("/packs", authorize, packRoutes(pool, env));
 app.use("/collections", authorize, collectionRoutes(pool));
 app.use("/trades", authorize, tradeRoutes(pool));
+app.use("/api/decks", authorize, decksRoutes(pool));
+app.use("/api/wishlist", authorize, wishlistRoutes(pool));
 
 app.listen(port, hostname, async () => {
     console.log(`http://${hostname}:${port}`);

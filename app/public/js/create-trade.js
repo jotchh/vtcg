@@ -4,6 +4,21 @@ let offeredCardsList = document.getElementById("offered-cards");
 let params = new URLSearchParams(window.location.search);
 let userID = params.get("userId");
 
+let tradePartnerName = document.getElementById("trade-partner-name");
+let partnerCollectionName = document.getElementById("partner-collection-name");
+
+fetch(`/trades/users/${userID}`)
+.then(response => {
+    return response.json();
+})
+.then(data => {
+    tradePartnerName.textContent = data.username;
+    partnerCollectionName.textContent = data.username;
+})
+.catch(error => {
+    console.error("Error loading trade partner:", error);
+});
+
 let offeredCards = [];
 let requestedCards = [];
 
@@ -21,6 +36,7 @@ fetch(`/trades/users/${userID}/cards`)
         let card = theirCards[i];
         
         let cardResult = document.createElement("div");
+        cardResult.classList.add("trade-card");
         
         let cardName = document.createElement("p");
         cardName.textContent = card.name;
@@ -72,6 +88,7 @@ fetch("/trades/my-cards")
         let card = yourCards[i];
         
         let cardResult = document.createElement("div");
+        cardResult.classList.add("trade-card");
         
         let cardName = document.createElement("p");
         cardName.textContent = card.name;
@@ -165,6 +182,7 @@ function displayRequestedCards() {
         let card = requestedCards[i];
 
         let requestedCard = document.createElement("div");
+        requestedCard.classList.add("summary-card");
 
         let cardName = document.createElement("p");
         cardName.textContent = card.name;
@@ -196,6 +214,7 @@ function displayOfferedCards() {
         let card = offeredCards[i];
 
         let offeredCard = document.createElement("div");
+        offeredCard.classList.add("summary-card");
 
         let cardName = document.createElement("p");
         cardName.textContent = card.name;

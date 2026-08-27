@@ -126,11 +126,27 @@ CREATE TABLE decks (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Each row assigns one specific owned copy (user_card_id) to a deck. A deck's
+-- quantity of a card is COUNT(*) grouped by card_id. The same copy - and the
+-- same card - can be assigned to multiple different decks at once, since decks
+-- are separate virtual configurations, not concurrent physical states; only
+-- one row per (deck, copy) is allowed so a single copy can't double-count
+-- within the same deck. If a copy is later deleted (scrapped, traded away),
+-- it's automatically removed from every deck that referenced it.
 CREATE TABLE deck_cards (
     deck_id INT REFERENCES decks(id) ON DELETE CASCADE,
-    user_card_id INT REFERENCES user_cards(id),
+    user_card_id INT REFERENCES user_cards(id) ON DELETE CASCADE,
 
     PRIMARY KEY (deck_id, user_card_id)
+);
+
+-- Cards a user wants but doesn't (fully) own, independent of any deck.
+CREATE TABLE wishlist_cards (
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    card_id INT REFERENCES cards(id),
+    quantity INT NOT NULL DEFAULT 1,
+
+    PRIMARY KEY (user_id, card_id)
 );
 
 CREATE TABLE metadata (

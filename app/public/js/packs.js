@@ -21,7 +21,12 @@ function populateSetsForGame(selectedGame) {
 
 async function loadPackInfo() {
     fetch("/packs")
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(response.status === 403 ? "You must be logged in to open packs." : "Failed to load pack info.");
+            }
+            return response.json();
+        })
         .then(data => {
             opensRemaining.textContent = `Free opens left today: ${data.dailyPackOpens}`;
 
@@ -41,6 +46,7 @@ async function loadPackInfo() {
         })
         .catch(error => {
             console.error("Error loading pack info:", error);
+            statusMessage.textContent = error.message;
         });
 }
 

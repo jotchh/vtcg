@@ -19,9 +19,6 @@ function pickWeighted(entries) {
   return entries[entries.length - 1][0];
 }
 
-// TODO: remove once real authenticatoin is added. lets packs work without a logged-in session
-const DEV_USER_ID = 1;
-
 module.exports = function (pool, env) {
   const economy = env.economy || {};
   const DAILY_FREE_OPENS = economy.dailyFreeOpens ?? 5;
@@ -84,7 +81,7 @@ module.exports = function (pool, env) {
   router.get("/", async (req, res) => {
     const client = await pool.connect();
 
-    const userId = req.user.id ?? DEV_USER_ID;
+    const userId = req.user.id;
 
     try {
       await resetDailyOpensIfNeeded(client, userId);
@@ -117,7 +114,7 @@ module.exports = function (pool, env) {
       return res.status(400).send("game and set_name are required");
     }
 
-    const userId = req.user.id ?? DEV_USER_ID;
+    const userId = req.user.id;
     const client = await pool.connect();
 
     try {
@@ -161,7 +158,7 @@ module.exports = function (pool, env) {
       return res.status(400).send(`Exactly ${SCRAP_COST} card ids are required to scrap`);
     }
 
-    const userId = req.user.id ?? DEV_USER_ID;
+    const userId = req.user.id;
     const client = await pool.connect();
 
     try {

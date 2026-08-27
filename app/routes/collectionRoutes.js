@@ -6,7 +6,7 @@ const DEV_USER_ID = 1;
 
 module.exports = function (pool) {
   router.get("/", async (req, res) => {
-    const userId = req.session.userId ?? DEV_USER_ID;
+    const userId = req.user.id ?? DEV_USER_ID;
     const { game, set_name, rarity } = req.query;
 
     const pageNumber = Math.max(parseInt(req.query.page) || 1, 1);
@@ -66,7 +66,7 @@ module.exports = function (pool) {
   });
 
   router.get("/filters", async (req, res) => {
-    const userId = req.session.userId ?? DEV_USER_ID;
+    const userId = req.user.id ?? DEV_USER_ID;
 
     try {
       const result = await pool.query(

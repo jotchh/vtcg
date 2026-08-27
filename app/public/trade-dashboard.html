@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Trades</title>
+
+    <link rel="stylesheet" href="css/trade.css">
+    <script src="js/trade-dashboard.js" defer></script>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <a href="dashboard.html">Home</a>
+            <a href="card.html">Cards</a>
+            <a href="collections.html">Collection</a>
+            <a href="trade-dashboard.html">Trades</a>
+            <a href="login.html">Login</a>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Trading Dashboard</h1>
+
+        <section class="start-trade">
+            <h2>Start a New Trade</h2>
+
+            <div class="trade-search-options">
+                <button id="user-search-button" type="button" class="active">Search by User</button>
+                <button id="card-search-button" type="button">Search by Card</button>
+            </div>
+
+            <div id="user-search-panel" class="search-panel">
+                <label for="user-search">Find a User</label>
+                <input id="user-search" type="search" placeholder="Enter username...">
+
+                <div id="user-results" class="search-results">
+
+                </div>
+            </div>
+
+            <div id="card-search-panel" class="search-panel">
+                <label for="card-search">Find a Card</label>
+                <input id="card-search" type="search" placeholder="Enter card name...">
+
+                <div class="card-filters">
+                    <select id="game-filter">
+                        <option value="">All Games</option>
+                        <option value="pokemon">Magic</option>
+                    </select>
+
+                    <select id="set-filter">
+                        <option value="">All Sets</option>
+                    </select>
+                </div>
+
+                <div id="card-results" class="listing-results">
+
+                </div>
+
+                <div id="listing-paging" class="paging">
+                    <button id="previous-page" type="button">Previous</button>
+                    <span id="page-number">Page 1</span>
+                    <button id="next-page" type="button">Next</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="create-listing-section">
+            <h2>Have a Card to Trade?</h2>
+
+            <p>Create a listing to let other users know what you are offering and what you want.</p>
+
+            <button id="create-listing-button" type="button">Create Listing</button>
+        </section>
+
+        <section class="my-trades">
+            <h2>My Trades</h2>
+            <div class="trade-tabs">
+                <button id="incoming-tab" type="button" class="active">Incoming</button>
+                <button id="outgoing-tab" type="button">Outgoing</button>
+                <button id="completed-tab" type="button">Completed</button>
+            </div>
+
+            <div id="trade-list">
+
+            </div>
+        </section>
+    </main>
+</body>
+</html>

@@ -26,12 +26,12 @@ module.exports = function (pool) {
   }
 
   router.get("/", async (req, res) => {
-    const userId = req.session?.userId ?? DEV_USER_ID;
+    const userId = req.user.id ?? DEV_USER_ID;
     res.status(200).json(await getWishlistRows(userId));
   });
 
   router.post("/", async (req, res) => {
-    const userId = req.session?.userId ?? DEV_USER_ID;
+    const userId = req.user.id ?? DEV_USER_ID;
     let { cardId, quantity } = req.body;
 
     await pool.query(
@@ -44,7 +44,7 @@ module.exports = function (pool) {
   });
 
   router.delete("/:cardId", async (req, res) => {
-    const userId = req.session?.userId ?? DEV_USER_ID;
+    const userId = req.user.id ?? DEV_USER_ID;
     await pool.query(
       "DELETE FROM wishlist_cards WHERE user_id = $1 AND card_id = $2",
       [userId, parseInt(req.params.cardId, 10)]

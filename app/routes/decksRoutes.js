@@ -55,7 +55,7 @@ module.exports = function (pool) {
   }
 
   router.get("/", async (req, res) => {
-    const userId = req.session?.userId ?? DEV_USER_ID;
+    const userId = req.user.id ?? DEV_USER_ID;
 
     let result = await pool.query(
       "SELECT * FROM decks WHERE user_id = $1 ORDER BY created_at DESC",
@@ -68,14 +68,14 @@ module.exports = function (pool) {
   });
 
   router.get("/:id", async (req, res) => {
-    const userId = req.session?.userId ?? DEV_USER_ID;
+    const userId = req.user.id ?? DEV_USER_ID;
     let deckRow = await findDeckRow(parseInt(req.params.id, 10), userId);
     if (!deckRow) return res.status(404).send("Deck not found");
     res.status(200).json(toDeckDTO(deckRow, await getDeckCardRows(deckRow.id)));
   });
 
   router.post("/", async (req, res) => {
-    const userId = req.session?.userId ?? DEV_USER_ID;
+    const userId = req.user.id ?? DEV_USER_ID;
     let { name } = req.body;
     if (!name) return res.status(400).send("Deck name is required");
 
@@ -87,7 +87,7 @@ module.exports = function (pool) {
   });
 
   router.delete("/:id", async (req, res) => {
-    const userId = req.session?.userId ?? DEV_USER_ID;
+    const userId = req.user.id ?? DEV_USER_ID;
     let result = await pool.query(
       "DELETE FROM decks WHERE id = $1 AND user_id = $2 RETURNING id",
       [parseInt(req.params.id, 10), userId]
@@ -98,7 +98,7 @@ module.exports = function (pool) {
 
   // Adds/increases a card in the deck, capped at how many of it the user owns.
   router.post("/:id/cards", async (req, res) => {
-    const userId = req.session?.userId ?? DEV_USER_ID;
+    const userId = req.user.id ?? DEV_USER_ID;
     let deckId = parseInt(req.params.id, 10);
     let deckRow = await findDeckRow(deckId, userId);
     if (!deckRow) return res.status(404).send("Deck not found");
@@ -120,7 +120,7 @@ module.exports = function (pool) {
   });
 
   router.delete("/:id/cards/:cardId", async (req, res) => {
-    const userId = req.session?.userId ?? DEV_USER_ID;
+    const userId = req.user.id ?? DEV_USER_ID;
     let deckId = parseInt(req.params.id, 10);
     let deckRow = await findDeckRow(deckId, userId);
     if (!deckRow) return res.status(404).send("Deck not found");

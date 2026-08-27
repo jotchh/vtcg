@@ -2,24 +2,48 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VTCG - Register</title>
+    <link rel="stylesheet" href="./css/global.css">
+    <link rel="stylesheet" href="./css/form.css">
 </head>
+
 <body>
-    <h2>Create a VTCG Account</h2>
-    
-    <form action="/auth/register" method="POST">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br><br>
+    <main class="auth-page">
+        <section class="auth-card">
+            <div class="auth-header">
+                <a href="/index.html" class="auth-logo">VTCG</a>
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br><br>
+                <h1>Create an Account</h1>
+                <p>Join VTCG and start building your collection.</p>
+            </div>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
+            <form action="/auth/register" method="POST" class="auth-form">
+                <div class="form-field">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
 
-        <button type="submit">Create Account</button>
-    </form>
-    
-    <p>Already have an account? <a href="/login.html">Login here</a></p>
+                <div class="form-field">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+
+                <button type="submit" class="auth-button">
+                    Create Account
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <span>Already have an account?</span>
+                <a href="/login.html">Login here</a>
+            </div>
+        </section>
+    </main>
 </body>
 </html>

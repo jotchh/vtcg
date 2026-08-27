@@ -1,0 +1,93 @@
+:root {
+    --background: #111;
+    --surface: #1a1a1a;
+    --surface-hover: #222;
+    --border: #333;
+    --text: #fff;
+    --text-secondary: #aaa;
+    --text-muted: #777;
+}
+
+body {
+    margin: 0;
+    background: var(--background);
+    color: var(--text);
+    font-family: Arial, sans-serif;
+}
+
+.dashboard-header {
+    height: 70px;
+    display: flex;
+    align-items: center;
+    padding: 0 40px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    gap: 40px;
+    box-sizing: border-box;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: 800;
+    text-decoration: none;
+    color: var(--text);
+}
+
+.main-nav {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    flex: 1;
+}
+
+.main-nav a {
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.main-nav a:hover {
+    color: var(--text);
+}
+
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+#username {
+    font-weight: 600;
+    color: var(--text);
+}
+
+.logout-btn {
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.logout-btn:hover {
+    color: #d33;
+}
+
+@media (max-width: 750px) {
+    .dashboard-header {
+        height: auto;
+        padding: 20px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .main-nav {
+        order: 3;
+        width: 100%;
+        overflow-x: auto;
+        gap: 18px;
+    }
+
+    .user-menu {
+        margin-left: auto;
+    }
+}

@@ -3,12 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="page-title"></title>
+    <title id="page-title">VTCG - Card</title>
+    <link rel="stylesheet" href="./css/global.css">
     <link rel="stylesheet" href="./css/card.css">
 </head>
+
 <body>
-    <h1>Card Viewer</h1>
-    <div id="card-viewer"><p id="query-message"></p></div>
+    <header class="dashboard-header">
+        <a href="/dashboard.html" class="logo">VTCG</a>
+
+        <nav class="main-nav">
+            <a href="/packs.html">Packs</a>
+            <a href="/search.html">Cards</a>
+            <a href="/collections.html">Collection</a>
+            <a href="/trade-dashboard.html">Trades</a>
+        </nav>
+
+        <div class="user-menu">
+            <span id="username"></span>
+            <a href="/login.html" id="auth-link">Login</a>
+        </div>
+    </header>
+
+    <main class="card-page">
+        <div class="page-header">
+            <p class="eyebrow">Card Details</p>
+            <h1>Card Viewer</h1>
+        </div>
+
+        <div id="card-viewer">
+            <p id="query-message"></p>
+        </div>
+    </main>
+
+    <script src="./js/global.js"></script>
+    <script src="./js/card.js"></script>
 </body>
-<script src="js/card.js"></script>
 </html>

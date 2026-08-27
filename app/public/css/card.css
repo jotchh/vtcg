@@ -1,14 +1,31 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+.card-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 50px 30px;
+}
+
+.page-header {
+    margin-bottom: 30px;
+}
+
+.page-header h1 {
     margin: 0;
-    padding: 40px;
+    font-size: 2.4rem;
+}
+
+.eyebrow {
+    margin: 0 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #777;
 }
 
 #card-viewer {
     display: flex;
     justify-content: center;
-    padding: 40px;
+    padding: 20px;
 }
 
 .card {
@@ -16,18 +33,21 @@ body {
 }
 
 .card-art {
+    position: relative;
+    overflow: hidden;
     transform-style: preserve-3d;
     transition: transform 0.1s ease, box-shadow 0.3s ease;
 }
 
 .card-art:hover {
-    box-shadow: 0 20px 35px rgba(0, 0, 0, 0.35), 0 0 20px rgba(255, 255, 255, 0.4);
+    box-shadow:
+        0 20px 35px rgba(0, 0, 0, 0.35),
+        0 0 20px rgba(255, 255, 255, 0.4);
 }
 
 .card-art img {
     width: 100%;
     display: block;
-
     transition: transform 0.4s ease, filter 0.4s ease;
 }
 
@@ -37,26 +57,19 @@ body {
 
 .card-art::after {
     content: "";
-
     position: absolute;
-
     top: -50%;
     left: -100%;
-
     width: 50%;
     height: 200%;
-
     background: linear-gradient(
         90deg,
         transparent,
         rgba(255, 255, 255, 0.35),
         transparent
     );
-
     transform: rotate(25deg);
-
     transition: left 0.6s ease;
-
     pointer-events: none;
 }
 
@@ -77,16 +90,28 @@ body {
     display: flex;
     flex-direction: column;
     gap: 5px;
-
     margin-bottom: 15px;
 }
 
 .details {
-    border-top: 1px solid #ddd;
-
-    padding-top: 12px;
-
     display: flex;
     flex-direction: column;
     gap: 8px;
+    padding-top: 12px;
+    border-top: 1px solid #ddd;
+}
+
+@media (max-width: 600px) {
+    .card-page {
+        padding: 35px 20px;
+    }
+
+    #card-viewer {
+        padding: 10px;
+    }
+
+    .card {
+        width: 100%;
+        max-width: 350px;
+    }
 }

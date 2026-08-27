@@ -1,0 +1,101 @@
+.dashboard {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 30px;
+}
+
+.welcome-section {
+    margin-bottom: 45px;
+}
+
+.eyebrow {
+    margin: 0 0 8px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #777;
+}
+
+.welcome-section h1 {
+    margin: 0 0 12px;
+    font-size: 2.6rem;
+}
+
+.welcome-text {
+    margin: 0;
+    max-width: 650px;
+    color: #666;
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.dashboard-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 28px;
+    min-height: 150px;
+    border: 1px solid #777;
+    border-radius: 12px;
+    background: #222;
+    text-decoration: none;
+    color: #fff;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-4px);
+    border-color: #555;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-card h2 {
+    margin: 0 0 7px;
+    font-size: 1.25rem;
+}
+
+.dashboard-card p {
+    margin: 0;
+    color: #777;
+    line-height: 1.5;
+}
+
+.card-arrow {
+    position: absolute;
+    right: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.4rem;
+    color: #999;
+    transition: transform 0.2s ease;
+}
+
+.dashboard-card:hover .card-arrow {
+    transform: translate(5px, -50%);
+    color: #222;
+}
+
+@media (max-width: 750px) {
+    .dashboard {
+        padding: 40px 20px;
+    }
+
+    .welcome-section h1 {
+        font-size: 2rem;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -2,30 +2,48 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>VTCG -> Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VTCG - Login</title>
+    <link rel="stylesheet" href="./css/global.css">
+    <link rel="stylesheet" href="./css/form.css">
 </head>
+
 <body>
-    <h2>Login to VTCG</h2>
-    
+    <main class="auth-page">
+        <section class="auth-card">
+            <div class="auth-header">
+                <a href="/dashboard.html" class="auth-logo">VTCG</a>
+                <h1>Login to VTCG</h1>
+            </div>
 
-    <p id="error-msg" style="color: red; display: none;">Incorrect email or password. Please try again.</p>
-    
-    <form action="/auth/login" method="POST">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br><br>
+            <form action="/auth/login" method="POST" class="auth-form">
+                <div class="form-field">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
+                <div class="form-field">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
 
-        <button type="submit">Login</button>
-    </form>
-    
-    <p>Don't have an account? <a href="/register.html">Register here</a></p>
+                <button type="submit" class="auth-button">
+                    Login
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <span>Don't have an account?</span>
+                <a href="/register.html">Register here</a>
+            </div>
+        </section>
+    </main>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('error')) {
-            document.getElementById('error-msg').style.display = 'block';
+
+        if (urlParams.has("error")) {
+            document.getElementById("error-msg").style.display = "block";
         }
     </script>
 </body>

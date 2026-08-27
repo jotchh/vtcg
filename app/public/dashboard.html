@@ -2,31 +2,74 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VTCG - Dashboard</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .menu { margin-bottom: 20px; }
-        .menu a { margin-right: 15px; text-decoration: none; color: blue; }
-    </style>
+    <link rel="stylesheet" href="./css/global.css">
+    <link rel="stylesheet" href="./css/dashboard.css">
 </head>
-<body>
-    <div class="menu">
-        <strong>VTCG Menu:</strong>
-        <a href="/dashboard.html">My Dashboard</a>
-        <a href="/decks.html">Deck Builder</a> 
-        <a href="/auth/logout">Logout</a>
-    </div>
 
-    <h2>Welcome to the VTCG!</h2>
-    <p>You have successfully logged in.</p>
-    
-    <div style="border: 1px solid #ccc; padding: 15px; width: 300px;">
-        <h3>Quick Actions</h3>
-        <ul>
-            <li>Open a Card Pack</li>
-            <li>Edit Custom Decks</li>
-            <li>Message Other Players</li>
-        </ul>
-    </div>
+<body>
+    <header class="dashboard-header">
+        <a href="/dashboard.html" class="logo">VTCG</a>
+
+        <nav class="main-nav">
+            <a href="/packs.html">Packs</a>
+            <a href="/search.html">Cards</a>
+            <a href="/collections.html">Collection</a>
+            <a href="/trade-dashboard.html">Trades</a>
+        </nav>
+
+        <div class="user-menu">
+            <span id="username"></span>
+            <a href="/login.html" id="auth-link">Login</a>
+        </div>
+    </header>
+
+    <main class="dashboard">
+        <section class="welcome-section">
+            <p class="eyebrow">Welcome back</p>
+            <h1 id="welcome-message">Welcome to VTCG!</h1>
+            <p class="welcome-text">
+                Open packs, build your collection, search for cards, and trade with other players.
+            </p>
+        </section>
+
+        <section class="dashboard-grid">
+            <a href="/packs.html" class="dashboard-card">
+                <div>
+                    <h2>Open Packs</h2>
+                    <p>Open card packs and discover your next pulls.</p>
+                </div>
+                <span class="card-arrow">→</span>
+            </a>
+
+            <a href="/search.html" class="dashboard-card">
+                <div>
+                    <h2>Search Cards</h2>
+                    <p>Browse cards, sets, games, and card information.</p>
+                </div>
+                <span class="card-arrow">→</span>
+            </a>
+
+            <a href="/collections.html" class="dashboard-card">
+                <div>
+                    <h2>My Collection</h2>
+                    <p>View and manage the cards you currently own.</p>
+                </div>
+                <span class="card-arrow">→</span>
+            </a>
+
+            <a href="/trade-dashboard.html" class="dashboard-card">
+                <div>
+                    <h2>Trading</h2>
+                    <p>Manage your trades and exchange cards with other players.</p>
+                </div>
+                <span class="card-arrow">→</span>
+            </a>
+        </section>
+    </main>
+
+    <script src="./js/global.js"></script>
+    <script src="./js/dashboard.js"></script>
 </body>
 </html>

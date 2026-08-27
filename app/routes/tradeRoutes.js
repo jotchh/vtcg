@@ -378,6 +378,13 @@ module.exports = function(pool) {
             }
                     
             await client.query(`
+                DELETE FROM deck_cards
+                WHERE user_card_id IN (
+                    SELECT user_card_id
+                    FROM trade_cards
+                    WHERE trade_id = $1);`, [tradeID]);
+
+            await client.query(`
                 UPDATE user_cards
                 SET user_id = $1,
                 is_tradable = FALSE

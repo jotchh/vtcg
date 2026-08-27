@@ -33,11 +33,17 @@ let myTrades = {
 userSearchButton.addEventListener("click", function() {
     userSearchPanel.style.display = "block";
     cardSearchPanel.style.display = "none";
+
+    userSearchButton.classList.add("active");
+    cardSearchButton.classList.remove("active");
 });
 
 cardSearchButton.addEventListener("click", function() {
     userSearchPanel.style.display = "none";
     cardSearchPanel.style.display = "block";
+
+    cardSearchButton.classList.add("active");
+    userSearchButton.classList.remove("active");
 });
 
 userSearchInput.addEventListener("input", function() {
@@ -189,6 +195,8 @@ function displayTrades(type) {
     for (let i = 0; i < trades.length; i++) {
         let trade = trades[i];
         let tradeResult = document.createElement("div");
+        tradeResult.classList.add("trade-item");
+
         let tradeTitle = document.createElement("h3");
 
         if (type === "incoming") {
@@ -204,6 +212,8 @@ function displayTrades(type) {
 
         let offeredCards = document.createElement("div");
         let requestedCards = document.createElement("div");
+        offeredCards.classList.add("trade-side");
+        requestedCards.classList.add("trade-side");
 
         let offeredTitle = document.createElement("h4");
         let requestedTitle = document.createElement("h4");
@@ -305,6 +315,7 @@ function loadTradeCards(tradeID, offeredCards, requestedCards) {
             let card = data[i];
 
             let cardResult = document.createElement("div");
+            cardResult.classList.add("trade-card-result");
 
             let image = document.createElement("img");
             image.src = card.img_url;

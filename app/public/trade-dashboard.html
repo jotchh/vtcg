@@ -6,19 +6,27 @@
 
     <title>Trades</title>
 
+    <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/trade.css">
+    <script src="js/global.js" defer></script>
     <script src="js/trade-dashboard.js" defer></script>
 </head>
 
 <body>
-    <header>
-        <nav>
-            <a href="dashboard.html">Home</a>
-            <a href="card.html">Cards</a>
-            <a href="collections.html">Collection</a>
-            <a href="trade-dashboard.html">Trades</a>
-            <a href="/auth/logout">Logout</a>
+    <header class="dashboard-header">
+        <a href="/dashboard.html" class="logo">VTCG</a>
+
+        <nav class="main-nav">
+            <a href="/packs.html">Packs</a>
+            <a href="/search.html">Cards</a>
+            <a href="/collections.html">Collection</a>
+            <a href="/trade-dashboard.html">Trades</a>
         </nav>
+
+        <div class="user-menu">
+            <span id="username"></span>
+            <a href="/login.html" id="auth-link">Login</a>
+        </div>
     </header>
 
     <main>
@@ -48,7 +56,7 @@
                 <div class="card-filters">
                     <select id="game-filter">
                         <option value="">All Games</option>
-                        <option value="pokemon">Magic</option>
+                        <option value="Magic">Magic</option>
                     </select>
 
                     <select id="set-filter">
@@ -66,14 +74,6 @@
                     <button id="next-page" type="button">Next</button>
                 </div>
             </div>
-        </section>
-
-        <section class="create-listing-section">
-            <h2>Have a Card to Trade?</h2>
-
-            <p>Create a listing to let other users know what you are offering and what you want.</p>
-
-            <button id="create-listing-button" type="button">Create Listing</button>
         </section>
 
         <section class="my-trades">

@@ -66,6 +66,26 @@ module.exports = function(pool) {
         }
     });
 
+    router.get("/users/:userID", (req, res) => {
+        let userID = req.params.userID;
+        
+        pool.query(`
+            SELECT id, username
+            FROM users
+            WHERE id = $1;`, [userID])
+        .then(result => {
+            if (result.rows.length === 0) {
+                return res.status(404).json({ error: "User not found" });
+            }
+            
+            res.json(result.rows[0]);
+        })
+        .catch(error => {
+            console.error("Error loading user:", error);
+            res.status(500).send("Error loading user");
+        });
+    });
+
     router.get("/users/:userID/cards", (req, res) => {
         let currentUserID = req.user.id;
         
@@ -376,6 +396,20 @@ module.exports = function(pool) {
                 FROM trade_cards
                 WHERE trade_id = $2
                 AND trade_side = 'REQUEST');`, [trade.sender_id, tradeID]);
+
+            await client.query(`
+                UPDATE trades
+                SET status = 'CANCELLED',
+                resolved_at = CURRENT_TIMESTAMP
+                WHERE status = 'PENDING'
+                AND id != $1
+                AND id IN (
+                    SELECT DISTINCT trade_id
+                    FROM trade_cards
+                    WHERE user_card_id IN (
+                        SELECT user_card_id
+                        FROM trade_cards
+                        WHERE trade_id = $1));`, [tradeID]); 
                     
             await client.query(`
                 UPDATE trades

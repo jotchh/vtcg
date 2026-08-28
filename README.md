@@ -21,7 +21,8 @@ create an `env.json` file in the root dir
     "api": {
         "baseUrl": "https://openapi.tcgtracking.com/v1",
         "games": [
-            "Magic: The Gathering"
+            "Magic: The Gathering",
+            "Pokemon"
         ],
         "rarityMap": {
             "Common": "C",

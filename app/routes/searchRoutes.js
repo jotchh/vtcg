@@ -16,13 +16,13 @@ module.exports = function(pool) {
       let values = [];
 
       if (search) {
-        conditions.push(`name ILIKE $${values.length + 1} OR set_name ILIKE $${values.length + 1}`);
-        values.push(`%${search}%`);
+          conditions.push(`(name ILIKE $${values.length + 1} OR set_name ILIKE $${values.length + 1})`);
+          values.push(`%${search}%`);
       }
 
       if (game) {
-        conditions.push(`game = $${values.length + 1}`);
-        values.push(`${game}`);
+          conditions.push(`game = $${values.length + 1}`);
+          values.push(game);
       }
 
       let query = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
@@ -43,5 +43,17 @@ module.exports = function(pool) {
       res.status(500).json({error: "Error executing query"});
     }
   });
+
+  router.get("/filters", async (req, res) => {
+    try {
+        const result = await pool.query(`SELECT DISTINCT game FROM cards ORDER BY game`);
+        const games = result.rows.map(row => row.game);
+        res.status(200).json({ games });
+    } catch (err) {
+        console.error("Error loading search filters:", err);
+        res.status(500).send("Error loading search filters");
+    }
+  });
+
   return router;
 };

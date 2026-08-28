@@ -33,28 +33,21 @@
             <p>Search for cards across the VTCG database.</p>
         </section>
 
-        <form id="search-form" class="search-controls">
-            <div class="search-field">
-                <label for="search">Search</label>
-                <input
-                    type="text"
-                    id="search"
-                    placeholder="Search by card or set name..."
-                >
-            </div>
+    <form id="search-form" class="search-controls">
+        <div class="search-field">
+            <label for="search">Search</label>
+            <input type="text" id="search" placeholder="Search by card or set name...">
+        </div>
 
-            <div class="search-field">
-                <label for="game-select">Game</label>
-                <select id="game-select">
-                    <option value="">All Games</option>
-                    <option value="Magic: The Gathering">
-                        Magic: The Gathering
-                    </option>
-                </select>
-            </div>
+        <div class="search-field">
+            <label for="game-select">Game</label>
+            <select id="game-select">
+                <option value="">All Games</option>
+            </select>
+        </div>
 
-            <button type="submit" id="submit">Search</button>
-        </form>
+        <button type="submit" id="submit">Search</button>
+    </form>
 
         <div id="query-message" class="query-message"></div>
 

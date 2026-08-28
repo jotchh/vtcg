@@ -4,6 +4,14 @@ let opensRemaining = document.getElementById("opens-remaining");
 let statusMessage = document.getElementById("status-message");
 let openBtn = document.getElementById("open-btn");
 let tbody = document.getElementById("pulled-cards");
+
+let packOpening = document.getElementById("pack-opening");
+let pack = document.getElementById("pack");
+let packSetName = document.getElementById("pack-set-name");
+let packFlash = document.getElementById("pack-flash");
+let cardReveal = document.getElementById("card-reveal");
+let resultsTable = document.getElementById("results-table");
+
 let allSets = [];
 
 function populateSetsForGame(selectedGame) {
@@ -23,18 +31,25 @@ async function loadPackInfo() {
     fetch("/packs")
         .then(response => {
             if (!response.ok) {
-                throw new Error(response.status === 403 ? "You must be logged in to open packs." : "Failed to load pack info.");
+                throw new Error(
+                    response.status === 403
+                        ? "You must be logged in to open packs."
+                        : "Failed to load pack info."
+                );
             }
+
             return response.json();
         })
         .then(data => {
-            opensRemaining.textContent = `Free opens left today: ${data.dailyPackOpens}`;
+            opensRemaining.textContent =
+                `Free opens left today: ${data.dailyPackOpens}`;
 
             allSets = data.sets;
 
             let games = [...new Set(allSets.map(set => set.game))];
 
             gameSelect.replaceChildren();
+
             for (let game of games) {
                 let option = document.createElement("option");
                 option.value = game;
@@ -88,6 +103,56 @@ function renderResults(cards) {
     }
 }
 
+function wait(milliseconds) {
+    return new Promise(resolve => {
+        setTimeout(resolve, milliseconds);
+    });
+}
+
+async function animatePackOpening(cards, setName) {
+    packOpening.classList.remove("hidden");
+    resultsTable.classList.add("hidden");
+
+    cardReveal.replaceChildren();
+
+    packSetName.textContent = setName;
+
+    pack.classList.remove("open");
+    pack.classList.add("shake");
+
+    await wait(1000);
+
+    pack.classList.remove("shake");
+    pack.classList.add("open");
+
+    packFlash.classList.remove("active");
+
+    void packFlash.offsetWidth;
+
+    packFlash.classList.add("active");
+
+    await wait(500);
+
+    for (let card of cards) {
+        cardReveal.replaceChildren();
+
+        let img = document.createElement("img");
+
+        img.className = "reveal-card";
+        img.src = card.img_url;
+        img.alt = card.name;
+
+        cardReveal.appendChild(img);
+
+        await wait(1200);
+    }
+
+    packOpening.classList.add("hidden");
+    resultsTable.classList.remove("hidden");
+
+    renderResults(cards);
+}
+
 document.getElementById("open-form").addEventListener("submit", (event) => {
     event.preventDefault();
 
@@ -98,28 +163,45 @@ document.getElementById("open-form").addEventListener("submit", (event) => {
 
     let game = gameSelect.value;
     let set_name = setSelect.value;
+
     statusMessage.textContent = "Opening pack...";
     openBtn.disabled = true;
 
     fetch("/packs/open", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ game, set_name }),
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            game,
+            set_name
+        }),
     })
         .then(async response => {
             if (!response.ok) {
                 throw new Error(await response.text());
             }
+
             return response.json();
         })
-        .then(data => {
-            statusMessage.textContent = `Pulled ${data.cards.length} cards!`;
-            renderResults(data.cards);
+        .then(async data => {
+            statusMessage.textContent = "Opening pack...";
+
+            await animatePackOpening(data.cards, set_name);
+
+            statusMessage.textContent =
+                `Pulled ${data.cards.length} cards!`;
+
             loadPackInfo();
         })
         .catch(error => {
-            statusMessage.textContent = `ERROR opening pack: ${error.message}`;
+            statusMessage.textContent =
+                `ERROR opening pack: ${error.message}`;
+
             console.error("Error opening pack:", error);
+
+            packOpening.classList.add("hidden");
+            resultsTable.classList.remove("hidden");
         })
         .finally(() => {
             openBtn.disabled = false;

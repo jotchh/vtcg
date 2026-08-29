@@ -63,14 +63,12 @@ function renderResults(cards) {
         let nameCell = document.createElement("td");
         let setCell = document.createElement("td");
         let rarityCell = document.createElement("td");
-        let cndCell = document.createElement("td");
         let imgCell = document.createElement("td");
         let img = document.createElement("img");
 
         nameCell.textContent = card.name;
         setCell.textContent = card.set_name;
         rarityCell.textContent = card.rarity;
-        cndCell.textContent = card.cnd;
 
         img.src = card.img_url;
         img.alt = card.name;
@@ -81,7 +79,6 @@ function renderResults(cards) {
         row.appendChild(nameCell);
         row.appendChild(setCell);
         row.appendChild(rarityCell);
-        row.appendChild(cndCell);
         row.appendChild(imgCell);
 
         tbody.appendChild(row);

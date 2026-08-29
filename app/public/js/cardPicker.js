@@ -155,6 +155,10 @@ function renderCardTile(card, onRemove) {
     let tile = document.createElement("div");
     tile.className = "card";
 
+    tile.addEventListener("click", () => {
+        window.location.href = `/card.html?id=${encodeURIComponent(card.cardId ?? card.id)}`;
+    });
+
     if (card.img_url) {
         let img = document.createElement("img");
         img.src = card.img_url;

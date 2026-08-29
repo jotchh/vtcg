@@ -50,6 +50,15 @@ function authorize(req, res, next) {
     next();
 }
 
+function pageAuth(req, res, next) {
+    const { token } = req.cookies;
+    if (token === undefined || !Object.prototype.hasOwnProperty.call(tokenStorage, token)) {
+        return res.redirect("/login.html");
+    }
+    req.user = tokenStorage[token];
+    next();
+}
+
 async function runCardUpdate() {
     try {
         if (await cardUpdateService.shouldUpdate()) {
@@ -63,9 +72,16 @@ async function runCardUpdate() {
     }
 }
 
+const protectedPages = ["/packs.html", "/collections.html", "/trade-dashboard.html", "/create-trade.html", "/new-deck.html", "/deck-editor.html", "/dashboard.html", "/decks.html", "/wishlist.html"]
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+protectedPages.forEach(page => {
+    app.use(page, pageAuth);
+});
+
 app.use(express.static("public"));
 
 app.use("/auth", authRoutes(pool, tokenStorage, makeToken, cookieOptions));

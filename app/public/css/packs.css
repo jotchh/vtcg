@@ -210,3 +210,7 @@ tr, th, td {
 .scrap-card img { flex-shrink: 0; }
 
 #scrap-selection-info { font-weight: 600; }
+
+.hidden {
+    display: none;
+}

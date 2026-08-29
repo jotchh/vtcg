@@ -1,41 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Wishlist - VTCG</title>
-    <link rel="stylesheet" href="css/search.css">
-    <link rel="stylesheet" href="css/decks.css">
+
+    <link rel="stylesheet" href="./css/global.css">
+    <link rel="stylesheet" href="./css/search.css">
+    <link rel="stylesheet" href="./css/decks.css">
 </head>
+
 <body>
-    <header class="dashboard-header">
-        <a href="/dashboard.html" class="logo">VTCG</a>
 
-        <nav class="main-nav">
-            <a href="/packs.html">Packs</a>
-            <a href="/search.html">Cards</a>
-            <a href="/collections.html">Collection</a>
-            <a href="/trade-dashboard.html">Trades</a>
-            <a href="/decks.html">Deck Builder</a>
-        </nav>
+<header class="dashboard-header">
 
-        <div class="user-menu">
-            <span id="username"></span>
-            <a href="/login.html" id="auth-link">Login</a>
-        </div>
-    </header>
-    
-    <div class="top-bar">
-        <h1>My Wishlist</h1>
-        <button id="add-card-btn">+ Add Card</button>
+    <a href="/dashboard.html" class="logo">
+        VTCG
+    </a>
+
+    <nav class="main-nav">
+        <a href="/packs.html">Packs</a>
+        <a href="/search.html">Cards</a>
+        <a href="/collections.html">Collection</a>
+        <a href="/trade-dashboard.html">Trades</a>
+        <a href="/decks.html">Deck Builder</a>
+        <a href="/wishlist.html">Wishlist</a>
+    </nav>
+
+    <div class="user-menu">
+        <span id="username"></span>
+        <a href="/login.html" id="auth-link">Login</a>
     </div>
-    <p>Cards you want but don't own yet.</p>
 
-    <p id="status-message" class="hint"></p>
-    <div id="card-picker" style="display:none;"></div>
-    <div class="card-grid" id="wishlist-cards"></div>
+</header>
+
+<main class="search-page">
+
+    <section class="page-header">
+        <p class="eyebrow">Your Cards</p>
+        <h1>My Wishlist</h1>
+        <p>Cards you want but don't own yet.</p>
+    </section>
+
+    <div class="search-controls">
+        <button type="button" id="add-card-btn" class="pack-btn">
+            + Add Card
+        </button>
+    </div>
+
+    <p id="status-message" class="query-message"></p>
+
+    <div id="card-picker" hidden></div>
+
+    <section>
+        <div class="card-grid" id="wishlist-cards"></div>
+    </section>
+
+</main>
+<script src="./js/global.js"></script>
+<script src="./js/cardPicker.js"></script>
+<script src="./js/wishlist.js"></script>
 </body>
-<script src="js/global.js"></script>
-<script src="js/cardPicker.js"></script>
-<script src="js/wishlist.js"></script>
 </html>

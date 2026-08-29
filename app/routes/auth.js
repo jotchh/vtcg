@@ -31,7 +31,7 @@ module.exports = function(pool, tokenStorage, makeToken, cookieOptions) {
         const cleanUsername = username.trim();
         const cleanEmail = email.trim();
 
-        return (cleanUsername.length >= 3 && cleanUsername.length <= 25 && validUsername(cleanUsername) && cleanEmail.length >= 3 && cleanEmail.length <= 100 && password.length >= 8 && password.length <= 128);
+        return (cleanUsername.length >= 3 && cleanUsername.length <= 25 && validUsername(cleanUsername) && cleanEmail.length >= 3 && cleanEmail.length <= 100 && password.length >= 4 && password.length <= 128);
     }
 
     router.post("/register", async (req, res) => {

@@ -26,6 +26,7 @@
         <a href="/collections.html">Collection</a>
         <a href="/trade-dashboard.html">Trades</a>
         <a href="/decks.html">Deck Builder</a>
+        <a href="/wishlist.html">Wishlist</a>
     </nav>
 
     <div class="user-menu">
@@ -36,15 +37,10 @@
 </header>
 
 <main class="search-page">
-
     <section class="page-header">
         <p class="eyebrow">Card Packs</p>
-
         <h1>Packs</h1>
-
-        <p>
-            Open a pack to pull new cards.
-        </p>
+        <p>Open a pack to pull new cards.</p>
     </section>
 
     <p id="opens-remaining"></p>
@@ -52,50 +48,18 @@
     <form id="open-form" class="search-controls">
 
         <div class="search-field">
-            <label for="game-select">
-                Game
-            </label>
-
+            <label for="game-select">Game</label>
             <select id="game-select"></select>
         </div>
 
         <div class="search-field">
-            <label for="set-select">
-                Set
-            </label>
-
+            <label for="set-select">Set</label>
             <select id="set-select"></select>
         </div>
 
         <button type="submit" id="open-btn" class="pack-btn">Open Pack</button>
     </form>
-
-    <p id="status-message" class="query-message"></p>
-
-    <div id="pack-opening" class="pack-opening hidden">
-
-        <div id="pack" class="pack">
-
-            <div class="pack-logo">
-                VTCG
-            </div>
-
-            <div
-                id="pack-set-name"
-                class="pack-set"
-            ></div>
-
-        </div>
-
-        <div id="pack-flash"></div>
-
-        <div
-            id="card-reveal"
-            class="card-reveal"
-        ></div>
-
-    </div>
-
+    
     <section class="scrap-section">
         <div class="page-header">
             <h2>Out of packs?</h2>
@@ -111,8 +75,20 @@
         </div>
     </section>
 
+    <p id="status-message" class="query-message"></p>
 
-    <table id="results-table">
+    <div id="pack-opening" class="pack-opening hidden">
+        <div id="pack" class="pack">
+            <div class="pack-logo">
+                VTCG
+            </div>
+            <div id="pack-set-name" class="pack-set"></div>
+        </div>
+        <div id="pack-flash"></div>
+        <div id="card-reveal" class="card-reveal"></div>
+    </div>
+
+    <table id="results-table" class="hidden">
 
         <thead>
             <tr>

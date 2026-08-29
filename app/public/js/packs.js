@@ -123,4 +123,145 @@ document.getElementById("open-form").addEventListener("submit", (event) => {
         });
 });
 
+let scrapToggleBtn = document.getElementById("scrap-toggle-btn");
+let scrapPanel = document.getElementById("scrap-panel");
+let scrapCardList = document.getElementById("scrap-card-list");
+let scrapSelectionInfo = document.getElementById("scrap-selection-info");
+let scrapConfirmBtn = document.getElementById("scrap-confirm-btn");
+let scrapCostLabel = document.getElementById("scrap-cost");
+
+const RARITY_LABELS = { M: "Mythic", R: "Rare", U: "Uncommon", C: "Common" };
+
+let scrapCost = 10;
+let selectedScrapIds = new Set();
+let scrappableLoaded = false;
+
+function updateScrapSelectionInfo() {
+    scrapSelectionInfo.textContent = `${selectedScrapIds.size} / ${scrapCost} selected`;
+    scrapConfirmBtn.disabled = selectedScrapIds.size !== scrapCost;
+
+    let atMax = selectedScrapIds.size >= scrapCost;
+    for (let checkbox of scrapCardList.querySelectorAll("input[type=checkbox]")) {
+        checkbox.disabled = atMax && !checkbox.checked;
+    }
+}
+
+function renderScrappable(cards) {
+    scrapCardList.replaceChildren();
+    selectedScrapIds.clear();
+
+    if (cards.length === 0) {
+        scrapCardList.textContent = "You have no cards available to scrap.";
+        updateScrapSelectionInfo();
+        return;
+    }
+
+    for (let card of cards) {
+        let label = document.createElement("label");
+        label.className = "scrap-card";
+
+        let checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = card.user_card_id;
+
+        checkbox.addEventListener("change", () => {
+            if (checkbox.checked) {
+                selectedScrapIds.add(card.user_card_id);
+            } else {
+                selectedScrapIds.delete(card.user_card_id);
+            }
+            label.classList.toggle("selected", checkbox.checked);
+            updateScrapSelectionInfo();
+        });
+
+        let img = document.createElement("img");
+        img.src = card.img_url;
+        img.alt = card.name;
+        img.width = 80;
+
+        let text = document.createElement("span");
+        let rarity = RARITY_LABELS[card.rarity] ?? card.rarity;
+        text.textContent = `${card.name} · ${card.set_name} · ${rarity} · ${card.cnd}`;
+
+        label.append(checkbox, img, text);
+        scrapCardList.appendChild(label);
+    }
+
+    updateScrapSelectionInfo();
+}
+
+function loadScrappable() {
+    scrapCardList.textContent = "Loading...";
+    return fetch("/packs/scrappable")
+        .then(async response => {
+            if (!response.ok) {
+                throw new Error(await response.text());
+            }
+            return response.json();
+        })
+        .then(data => {
+            scrapCost = data.scrapCost;
+            scrapCostLabel.textContent = scrapCost;
+            scrapConfirmBtn.textContent = `Scrap ${scrapCost} & Open Pack`;
+            renderScrappable(data.cards);
+            scrappableLoaded = true;
+        })
+        .catch(error => {
+            console.error("Error loading scrappable cards:", error);
+            scrapCardList.textContent = `Failed to load cards: ${error.message}`;
+        });
+}
+
+scrapToggleBtn.addEventListener("click", () => {
+    let show = scrapPanel.hidden;
+    scrapPanel.hidden = !show;
+    scrapToggleBtn.textContent = show ? "Hide Scrap Menu" : "Scrap Cards for a Pack";
+    if (show && !scrappableLoaded) {
+        loadScrappable();
+    }
+});
+
+scrapConfirmBtn.addEventListener("click", () => {
+    if (!gameSelect.value || !setSelect.value) {
+        statusMessage.textContent = "No set selected.";
+        return;
+    }
+    if (selectedScrapIds.size !== scrapCost) return;
+
+    let game = gameSelect.value;
+    let set_name = setSelect.value;
+    let user_card_ids = [...selectedScrapIds];
+
+    if (!confirm(`Permanently scrap ${scrapCost} cards to open a ${set_name} pack?`)) return;
+
+    statusMessage.textContent = "Scrapping cards and opening pack...";
+    scrapConfirmBtn.disabled = true;
+
+    fetch("/packs/scrap-open", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ game, set_name, user_card_ids }),
+    })
+        .then(async response => {
+            if (!response.ok) {
+                throw new Error(await response.text());
+            }
+            return response.json();
+        })
+        .then(data => {
+            statusMessage.textContent = `Scrapped ${scrapCost} cards and pulled ${data.cards.length} new cards!`;
+            renderResults(data.cards);
+            scrappableLoaded = false;
+            loadScrappable();
+            loadPackInfo();
+        })
+        .catch(error => {
+            statusMessage.textContent = `ERROR scrapping for pack: ${error.message}`;
+            console.error("Error scrapping for pack:", error);
+        })
+        .finally(() => {
+            updateScrapSelectionInfo();
+        });
+});
+
 loadPackInfo();

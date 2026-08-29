@@ -108,6 +108,34 @@ module.exports = function (pool, env) {
     }
   });
 
+  router.get("/scrappable", async (req, res) => {
+    const userId = req.user.id;
+
+    try {
+      const { rows } = await pool.query(
+        `SELECT uc.id AS user_card_id, uc.cnd,
+                c.name, c.game, c.set_name, c.rarity, c.img_url
+         FROM user_cards uc
+         JOIN cards c ON c.id = uc.card_id
+         WHERE uc.user_id = $1
+           AND uc.id NOT IN (
+             SELECT tc.user_card_id
+             FROM trade_cards tc
+             JOIN trades t ON t.id = tc.trade_id
+             WHERE t.status = 'PENDING'
+           )
+           AND uc.id NOT IN (SELECT user_card_id FROM deck_cards)
+         ORDER BY c.game, c.set_name, c.rarity, c.name, uc.id`,
+        [userId]
+      );
+
+      res.json({ scrapCost: SCRAP_COST, cards: rows });
+    } catch (err) {
+      console.error("Error loading scrappable cards:", err);
+      res.status(500).send("Error loading scrappable cards");
+    }
+  });
+
   router.post("/open", async (req, res) => {
     const { game, set_name } = req.body;
     if (!game || !set_name) {
@@ -171,6 +199,15 @@ module.exports = function (pool, env) {
       if (owned.rows.length !== SCRAP_COST) {
         await client.query("ROLLBACK");
         return res.status(400).send("One or more cards are not in your collection");
+      }
+
+      const inDeck = await client.query(
+        "SELECT 1 FROM deck_cards WHERE user_card_id = ANY($1::int[]) LIMIT 1",
+        [user_card_ids]
+      );
+      if (inDeck.rows.length > 0) {
+        await client.query("ROLLBACK");
+        return res.status(400).send("One or more cards are assigned to a deck");
       }
 
       await client.query("DELETE FROM user_cards WHERE id = ANY($1::int[])", [user_card_ids]);

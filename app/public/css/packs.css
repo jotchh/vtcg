@@ -18,3 +18,37 @@ tr, th, td {
 }
 
 .pack-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.scrap-section { margin-top: 1rem; margin-bottom: 1rem; }
+
+.scrap-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 0.5rem;
+    max-height: 420px;
+    overflow-y: auto;
+    margin: 1rem 0;
+    padding: 0.5rem;
+    border: 1px solid #777;
+    border-radius: 6px;
+}
+
+.scrap-card {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem;
+    border: 1px solid #444;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.scrap-card.selected {
+    border-color: #4caf50;
+    background: rgba(76, 175, 80, 0.15);
+}
+
+.scrap-card img { flex-shrink: 0; }
+
+#scrap-selection-info { font-weight: 600; }

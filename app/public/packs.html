@@ -52,6 +52,21 @@
 
     <p id="status-message" class="query-message"></p>
 
+    <section class="scrap-section">
+        <div class="page-header">
+            <h2>Out of packs?</h1>
+            <p>Scrap <span id="scrap-cost">10</span> cards from your collection to open another pack!</p>
+        </div>
+
+        <button type="button" id="scrap-toggle-btn" class="pack-btn">Scrap Cards</button>
+
+        <div id="scrap-panel" hidden>
+            <p id="scrap-selection-info">0 / 10 selected</p>
+            <div id="scrap-card-list" class="scrap-grid"></div>
+            <button type="button" id="scrap-confirm-btn" class="pack-btn" disabled>Scrap 10 &amp; Open Pack</button>
+        </div>
+    </section>
+
     <table id="results-table">
         <thead>
             <tr>

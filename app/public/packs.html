@@ -5,16 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VTCG - Packs</title>
-    <style> 
-        table { width: 100%; border-collapse: collapse; }
-        tr, th, td {
-            border: 1px solid #777;
-            padding: 8px;
-            text-align: left;
-        }
-    </style>
     <link rel="stylesheet" href="./css/global.css">
     <link rel="stylesheet" href="./css/search.css">
+    <link rel="stylesheet" href="./css/packs.css">
 </head>
 
 <body>
@@ -54,22 +47,7 @@
             <select id="set-select"></select>
         </div>
 
-        <button
-            type="submit"
-            id="open-btn"
-            style="
-                cursor: pointer;
-                padding: 0.7rem 1.25rem;
-                border: 1px solid #ccc;
-                border-radius: 6px;
-                background: #222;
-                color: #fff;
-                font-weight: 600;
-                transition: transform 0.15s ease, box-shadow 0.15s ease;
-            "
-        >
-        Open Pack
-        </button>
+        <button type="submit" id="open-btn" class="pack-btn">Open Pack</button>
     </form>
 
     <p id="status-message" class="query-message"></p>

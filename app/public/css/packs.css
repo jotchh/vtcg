@@ -1,0 +1,20 @@
+table { width: 100%; border-collapse: collapse; }
+
+tr, th, td {
+    border: 1px solid #777;
+    padding: 8px;
+    text-align: left;
+}
+
+.pack-btn {
+    cursor: pointer;
+    padding: 0.7rem 1.25rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: #222;
+    color: #fff;
+    font-weight: 600;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pack-btn:disabled { opacity: 0.5; cursor: not-allowed; }

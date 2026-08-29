@@ -78,6 +78,23 @@
     border-color: #666;
 }
 
+.form-field input.input-error {
+    border: 1px solid #d9534f;
+}
+
+.form-field input.input-error:focus {
+    border-color: #d9534f;
+    outline: 2px solid #d9534f;
+}
+
+.form-error {
+    display: block;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    color: #d9534f;
+    font-size: 0.85rem;
+}
+
 .auth-button {
     width: 100%;
     height: 44px;

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,35 +17,33 @@
                 <h1>Login to VTCG</h1>
             </div>
 
-            <form action="/auth/login" method="POST" class="auth-form">
-                <div class="form-field">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
+        <div class="form-error" id="error-msg"></div>
 
-                <div class="form-field">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
+        <form action="/auth/login" method="POST" class="auth-form" id="login-form">
 
-                <button type="submit" class="auth-button">
-                    Login
-                </button>
-            </form>
-
-            <div class="auth-footer">
-                <span>Don't have an account?</span>
-                <a href="/register.html">Register here</a>
+            <div class="form-field">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" maxlength="100" autocomplete="email" required>
+                <small class="form-error" id="email-error"></small>
             </div>
-        </section>
-    </main>
 
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
+            <div class="form-field">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" autocomplete="current-password" required>
+                <small class="form-error" id="password-error"></small>
+            </div>
 
-        if (urlParams.has("error")) {
-            document.getElementById("error-msg").style.display = "block";
-        }
-    </script>
+            <button type="submit" class="auth-button">
+                Login
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <span>Don't have an account?</span>
+            <a href="/register.html">Register here</a>
+        </div>
+    </section>
+</main>
+<script src="./js/login.js"></script>
 </body>
 </html>

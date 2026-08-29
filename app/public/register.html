@@ -9,41 +9,51 @@
 </head>
 
 <body>
-    <main class="auth-page">
-        <section class="auth-card">
-            <div class="auth-header">
-                <a href="/index.html" class="auth-logo">VTCG</a>
+<main class="auth-page">
+    <section class="auth-card">
+        <div class="auth-header">
+            <a href="/index.html" class="auth-logo">VTCG</a>
 
-                <h1>Create an Account</h1>
-                <p>Join VTCG and start building your collection.</p>
+            <h1>Create an Account</h1>
+            <p>Join VTCG and start building your collection.</p>
+        </div>
+
+        <form action="/auth/register" method="POST" class="auth-form" id="register-form">
+            <div class="form-field">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" minlength="3" maxlength="25" autocomplete="username" required>
+                <small class="form-error" id="username-error"></small>
             </div>
 
-            <form action="/auth/register" method="POST" class="auth-form">
-                <div class="form-field">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" required>
-                </div>
-
-                <div class="form-field">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-
-                <div class="form-field">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-
-                <button type="submit" class="auth-button">
-                    Create Account
-                </button>
-            </form>
-
-            <div class="auth-footer">
-                <span>Already have an account?</span>
-                <a href="/login.html">Login here</a>
+            <div class="form-field">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" autocomplete="email" required>
+                <small class="form-error" id="email-error"></small>
             </div>
-        </section>
-    </main>
+
+            <div class="form-field">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" minlength="4" maxlength="128" autocomplete="new-password" required>
+                <small class="form-error" id="password-error"></small>
+            </div>
+
+            <div class="form-field">
+                <label for="confirm-password">Confirm Password</label>
+                <input type="password" id="confirm-password" name="confirm-password" minlength="4" maxlength="128" autocomplete="new-password" required>
+                <small class="form-error" id="confirm-password-error"></small>
+            </div>
+
+            <button type="submit" class="auth-button">
+                Create Account
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <span>Already have an account?</span>
+            <a href="/login.html">Login here</a>
+        </div>
+    </section>
+</main>
+<script src="./js/register.js"></script>
 </body>
 </html>

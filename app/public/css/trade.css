@@ -510,6 +510,17 @@
     color: var(--text);
 }
 
+input::placeholder {
+  font-style: italic;
+  color: #888; 
+}
+
+.search-hint {
+    margin: 4px 0 8px;
+    font-size: 0.85rem;
+    opacity: 0.5;
+}
+
 @media (max-width: 750px) {
     .trade-dashboard {
         padding: 40px 20px;

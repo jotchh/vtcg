@@ -4,6 +4,10 @@ const bcrypt = require("bcrypt");
 module.exports = function(pool, tokenStorage, makeToken, cookieOptions) {
     const router = express.Router();
 
+    function validUsername(username) {
+        return /^[a-zA-Z0-9_]+$/.test(username)
+    }
+
     function validateLogin(body) {
         if (!body || typeof body !== "object") {
             return false;
@@ -13,8 +17,25 @@ module.exports = function(pool, tokenStorage, makeToken, cookieOptions) {
         return (typeof email === "string" && typeof password === "string" && email.length > 0 && password.length > 0);
     }
 
+    function validateRegister(body) {
+        if (!body || typeof body !== "object") {
+            return false;
+        }
+        
+        const { username, email, password } = body;
+        
+        if (typeof username !== "string" || typeof email !== "string" || typeof password !== "string") {
+            return false;
+        }
+
+        const cleanUsername = username.trim();
+        const cleanEmail = email.trim();
+
+        return (cleanUsername.length >= 3 && cleanUsername.length <= 25 && validUsername(cleanUsername) && cleanEmail.length >= 3 && cleanEmail.length <= 100 && password.length >= 8 && password.length <= 128);
+    }
+
     router.post("/register", async (req, res) => {
-        if (!validateLogin(req.body)) {
+        if (!validateRegister(req.body)) {
             return res.sendStatus(400);
         }
 
@@ -41,7 +62,7 @@ module.exports = function(pool, tokenStorage, makeToken, cookieOptions) {
 
     router.post("/login", async (req, res) => {
         if (!validateLogin(req.body)) {
-            return res.sendStatus(400);
+            return res.redirect("/login.html?error=invalid");
         }
 
         const { email, password } = req.body;
@@ -56,7 +77,7 @@ module.exports = function(pool, tokenStorage, makeToken, cookieOptions) {
         }
 
         if (result.rows.length === 0) {
-            return res.sendStatus(400);
+            return res.redirect("/login.html?error=invalid");
         }
 
         const user = result.rows[0];
@@ -71,7 +92,7 @@ module.exports = function(pool, tokenStorage, makeToken, cookieOptions) {
         }
 
         if (!verifyResult) {
-            return res.sendStatus(400);
+            return res.redirect("/login.html?error=invalid");
         }
 
         const token = makeToken();

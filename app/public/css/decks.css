@@ -28,8 +28,6 @@
     font-size: 0.9rem;
 }
 
-/* Buttons */
-
 #new-deck-btn,
 #add-card-btn,
 #new-deck-form button {
@@ -53,7 +51,25 @@
     transform: translateY(-1px);
 }
 
-/* Deck list */
+.card-btn {
+    height: 36px;
+    padding: 0 14px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.card-btn:hover {
+    background: var(--surface-hover);
+    border-color: #555;
+    transform: translateY(-1px);
+}
 
 .deck-list {
     list-style: none;
@@ -130,8 +146,6 @@
     border-color: #555;
 }
 
-/* Back link */
-
 .decks-page .back-link {
     display: inline-block;
     margin-bottom: 20px;
@@ -142,8 +156,6 @@
 .decks-page .back-link:hover {
     color: var(--text);
 }
-
-/* Deck cards */
 
 #deck-cards .card,
 #wishlist-cards .card {
@@ -162,7 +174,6 @@
     border-radius: 999px;
 }
 
-/* Card picker */
 
 #card-picker {
     margin: 20px 0 30px;
@@ -172,7 +183,6 @@
     background: var(--surface);
 }
 
-/* New deck form */
 
 #new-deck-form {
     max-width: 500px;
@@ -214,8 +224,6 @@
 #new-deck-form button {
     margin-top: 5px;
 }
-
-/* Responsive */
 
 @media (max-width: 650px) {
     .decks-page {

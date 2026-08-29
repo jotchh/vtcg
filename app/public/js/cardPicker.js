@@ -46,13 +46,18 @@ function renderCardPicker(container, fetchCards, onPick) {
 
     let form = document.createElement("form");
     form.className = "search-controls";
+    let field = document.createElement("div");
+    field.className = "search-field";
     let input = document.createElement("input");
     input.type = "text";
     input.placeholder = "Search cards...";
+    input.id = "search";
+    field.appendChild(input);
     let submit = document.createElement("button");
     submit.type = "submit";
+    submit.id = "submit";
     submit.textContent = "Search";
-    form.append(input, submit);
+    form.append(field, submit);
 
     let status = document.createElement("p");
     status.className = "hint";
@@ -105,6 +110,7 @@ function renderCardPicker(container, fetchCards, onPick) {
 
             let pickBtn = document.createElement("button");
             pickBtn.type = "button";
+            pickBtn.className = "card-btn";
             pickBtn.textContent = "Add";
             pickBtn.addEventListener("click", () => onPick(card));
             content.appendChild(pickBtn);
@@ -188,8 +194,12 @@ function renderCardTile(card, onRemove) {
     if (onRemove) {
         let removeBtn = document.createElement("button");
         removeBtn.type = "button";
+        removeBtn.className = "card-btn";
         removeBtn.textContent = "Remove";
-        removeBtn.addEventListener("click", () => onRemove(card.cardId));
+        removeBtn.addEventListener("click", event => {
+            event.stopPropagation();
+            onRemove(card.cardId);
+        });
         content.appendChild(removeBtn);
     }
 

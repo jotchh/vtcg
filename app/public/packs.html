@@ -4,15 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>VTCG - Packs</title>
+
     <link rel="stylesheet" href="./css/global.css">
     <link rel="stylesheet" href="./css/search.css">
     <link rel="stylesheet" href="./css/packs.css">
 </head>
 
 <body>
-    <header class="dashboard-header">
-        <a href="/dashboard.html" class="logo">VTCG</a>
+
+<header class="dashboard-header">
+
+    <a href="/dashboard.html" class="logo">
+        VTCG
+    </a>
+
     <nav class="main-nav">
         <a href="/packs.html">Packs</a>
         <a href="/search.html">Cards</a>
@@ -25,25 +32,38 @@
         <span id="username"></span>
         <a href="/login.html" id="auth-link">Login</a>
     </div>
+
 </header>
 
 <main class="search-page">
+
     <section class="page-header">
         <p class="eyebrow">Card Packs</p>
+
         <h1>Packs</h1>
-        <p>Open a pack to pull new cards.</p>
+
+        <p>
+            Open a pack to pull new cards.
+        </p>
     </section>
 
     <p id="opens-remaining"></p>
 
     <form id="open-form" class="search-controls">
+
         <div class="search-field">
-            <label for="game-select">Game</label>
+            <label for="game-select">
+                Game
+            </label>
+
             <select id="game-select"></select>
         </div>
 
         <div class="search-field">
-            <label for="set-select">Set</label>
+            <label for="set-select">
+                Set
+            </label>
+
             <select id="set-select"></select>
         </div>
 
@@ -52,9 +72,33 @@
 
     <p id="status-message" class="query-message"></p>
 
+    <div id="pack-opening" class="pack-opening hidden">
+
+        <div id="pack" class="pack">
+
+            <div class="pack-logo">
+                VTCG
+            </div>
+
+            <div
+                id="pack-set-name"
+                class="pack-set"
+            ></div>
+
+        </div>
+
+        <div id="pack-flash"></div>
+
+        <div
+            id="card-reveal"
+            class="card-reveal"
+        ></div>
+
+    </div>
+
     <section class="scrap-section">
         <div class="page-header">
-            <h2>Out of packs?</h1>
+            <h2>Out of packs?</h2>
             <p>Scrap <span id="scrap-cost">10</span> cards from your collection to open another pack!</p>
         </div>
 
@@ -67,7 +111,9 @@
         </div>
     </section>
 
+
     <table id="results-table">
+
         <thead>
             <tr>
                 <th>Name</th>
@@ -76,11 +122,15 @@
                 <th>Card Art</th>
             </tr>
         </thead>
+
         <tbody id="pulled-cards"></tbody>
+
     </table>
+
 </main>
 
 <script src="./js/global.js"></script>
 <script src="./js/packs.js"></script>
+
 </body>
 </html>

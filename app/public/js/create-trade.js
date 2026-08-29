@@ -1,11 +1,17 @@
 let yourCardList = document.getElementById("your-card-list");
 let offeredCardsList = document.getElementById("offered-cards");
-
 let params = new URLSearchParams(window.location.search);
 let userID = params.get("userId");
-
 let tradePartnerName = document.getElementById("trade-partner-name");
 let partnerCollectionName = document.getElementById("partner-collection-name");
+let offeredCards = [];
+let requestedCards = [];
+let theirCardList = document.getElementById("their-card-list");
+let requestedCardsList = document.getElementById("requested-cards");
+let yourCardSearch = document.getElementById("your-card-search");
+let theirCardSearch = document.getElementById("their-card-search");
+let yourCards = [];
+let theirCards = [];
 
 fetch(`/trades/users/${userID}`)
 .then(response => {
@@ -19,59 +25,13 @@ fetch(`/trades/users/${userID}`)
     console.error("Error loading trade partner:", error);
 });
 
-let offeredCards = [];
-let requestedCards = [];
-
-let theirCardList = document.getElementById("their-card-list");
-let requestedCardsList = document.getElementById("requested-cards");
-
 fetch(`/trades/users/${userID}/cards`)
 .then(response => {
     return response.json();
 })
 .then(data => {
-    let theirCards = data;
-
-    for (let i = 0; i < theirCards.length; i++) {
-        let card = theirCards[i];
-        
-        let cardResult = document.createElement("div");
-        cardResult.classList.add("trade-card");
-        
-        let cardName = document.createElement("p");
-        cardName.textContent = card.name;
-        
-        let condition = document.createElement("p");
-        condition.textContent = card.cnd;
-        
-        let image = document.createElement("img");
-        image.src = card.img_url;
-        image.alt = card.name;
-
-        let requestButton = document.createElement("button");
-        requestButton.textContent = "Request";
-
-        requestButton.addEventListener("click", function() {
-            let alreadySelected = false;
-            
-            for (let j = 0; j < requestedCards.length; j++) {
-                if (requestedCards[j].user_card_id === card.user_card_id) {
-                    alreadySelected = true;
-                }
-            }
-            
-            if (alreadySelected === false) {
-                requestedCards.push(card);
-                displayRequestedCards();
-            }
-        });
-        
-        cardResult.appendChild(image);
-        cardResult.appendChild(cardName);
-        cardResult.appendChild(condition);
-        cardResult.appendChild(requestButton);
-        theirCardList.appendChild(cardResult);
-    }
+    theirCards = data;
+    displayTheirCards();
 })
 .catch(error => {
     console.error("Error loading trade user cards:", error);
@@ -82,20 +42,48 @@ fetch("/trades/my-cards")
     return response.json();
 })
 .then(data => {
-    let yourCards = data;
+    yourCards = data;
+    displayYourCards();
+})
+.catch(error => {
+    console.error("Error loading your cards:", error);
+});
+
+yourCardSearch.addEventListener("input", function() {
+    displayYourCards();
+});
+
+theirCardSearch.addEventListener("input", function() {
+    displayTheirCards();
+});
+
+function displayYourCards() {
+    while (yourCardList.firstChild) {
+        yourCardList.removeChild(yourCardList.firstChild);
+    }
+
+    let search = yourCardSearch.value.toLowerCase().trim();
 
     for (let i = 0; i < yourCards.length; i++) {
         let card = yourCards[i];
-        
+
+        if (
+            search &&
+            !card.name.toLowerCase().includes(search) &&
+            !card.set_name.toLowerCase().includes(search)
+        ) {
+            continue;
+        }
+
         let cardResult = document.createElement("div");
         cardResult.classList.add("trade-card");
-        
+
         let cardName = document.createElement("p");
         cardName.textContent = card.name;
-        
+
         let condition = document.createElement("p");
         condition.textContent = card.cnd;
-        
+
         let image = document.createElement("img");
         image.src = card.img_url;
         image.alt = card.name;
@@ -105,29 +93,87 @@ fetch("/trades/my-cards")
 
         offerButton.addEventListener("click", function() {
             let alreadySelected = false;
-            
+
             for (let j = 0; j < offeredCards.length; j++) {
                 if (offeredCards[j].user_card_id === card.user_card_id) {
                     alreadySelected = true;
+                    break;
                 }
             }
-            
+
             if (alreadySelected === false) {
                 offeredCards.push(card);
                 displayOfferedCards();
             }
         });
-        
+
         cardResult.appendChild(image);
         cardResult.appendChild(cardName);
         cardResult.appendChild(condition);
         cardResult.appendChild(offerButton);
+
         yourCardList.appendChild(cardResult);
     }
-})
-.catch(error => {
-    console.error("Error loading trade user cards:", error);
-});
+}
+
+function displayTheirCards() {
+    while (theirCardList.firstChild) {
+        theirCardList.removeChild(theirCardList.firstChild);
+    }
+
+    let search = theirCardSearch.value.toLowerCase().trim();
+
+    for (let i = 0; i < theirCards.length; i++) {
+        let card = theirCards[i];
+
+        if (
+            search &&
+            !card.name.toLowerCase().includes(search) &&
+            !card.set_name.toLowerCase().includes(search)
+        ) {
+            continue;
+        }
+
+        let cardResult = document.createElement("div");
+        cardResult.classList.add("trade-card");
+
+        let cardName = document.createElement("p");
+        cardName.textContent = card.name;
+
+        let condition = document.createElement("p");
+        condition.textContent = card.cnd;
+
+        let image = document.createElement("img");
+        image.src = card.img_url;
+        image.alt = card.name;
+
+        let requestButton = document.createElement("button");
+        requestButton.textContent = "Request";
+
+        requestButton.addEventListener("click", function() {
+            let alreadySelected = false;
+
+            for (let j = 0; j < requestedCards.length; j++) {
+                if (requestedCards[j].user_card_id === card.user_card_id) {
+                    alreadySelected = true;
+                    break;
+                }
+            }
+
+            if (alreadySelected === false) {
+                requestedCards.push(card);
+                displayRequestedCards();
+            }
+        });
+
+        cardResult.appendChild(image);
+        cardResult.appendChild(cardName);
+        cardResult.appendChild(condition);
+        cardResult.appendChild(requestButton);
+
+        theirCardList.appendChild(cardResult);
+    }
+}
 
 let submitTradeButton = document.getElementById("submit-trade");
 let tradeMessage = document.getElementById("trade-message");
@@ -149,6 +195,9 @@ submitTradeButton.addEventListener("click", function() {
         return;
     }
 
+    tradeMessage.textContent = "Creating trade request..."
+    submitTradeButton.disabled = true;
+
     fetch("/trades", {
         method: "POST",
         headers: {
@@ -165,17 +214,27 @@ submitTradeButton.addEventListener("click", function() {
     })
     .then(data => {
         tradeMessage.textContent = "Trade created successfully.";
+        submitTradeButton.disabled = true;
         console.log(data);
     })
     .catch(error => {
         console.error("Error creating trade:", error);
         tradeMessage.textContent = "Error creating trade.";
+        submitTradeButton.disabled = false;
     });
 });
 
 function displayRequestedCards() {
     while (requestedCardsList.firstChild) {
         requestedCardsList.removeChild(requestedCardsList.firstChild);
+    }
+
+    if (requestedCards.length === 0) {
+        let emptyMessage = document.createElement("p");
+        emptyMessage.classList.add("empty-message");
+        emptyMessage.textContent = "No cards selected.";
+        requestedCardsList.appendChild(emptyMessage);
+        return;
     }
 
     for (let i = 0; i < requestedCards.length; i++) {
@@ -201,13 +260,22 @@ function displayRequestedCards() {
         requestedCard.appendChild(cardName);
         requestedCard.appendChild(condition);
         requestedCard.appendChild(removeButton);
+
         requestedCardsList.appendChild(requestedCard);
     }
-};
+}
 
 function displayOfferedCards() {
     while (offeredCardsList.firstChild) {
         offeredCardsList.removeChild(offeredCardsList.firstChild);
+    }
+
+    if (offeredCards.length === 0) {
+        let emptyMessage = document.createElement("p");
+        emptyMessage.classList.add("empty-message");
+        emptyMessage.textContent = "No cards selected.";
+        offeredCardsList.appendChild(emptyMessage);
+        return;
     }
 
     for (let i = 0; i < offeredCards.length; i++) {
@@ -233,9 +301,10 @@ function displayOfferedCards() {
         offeredCard.appendChild(cardName);
         offeredCard.appendChild(condition);
         offeredCard.appendChild(removeButton);
+
         offeredCardsList.appendChild(offeredCard);
     }
-};
+}
 
 let yourScrollLeft = document.getElementById("your-scroll-left");
 let yourScrollRight = document.getElementById("your-scroll-right");

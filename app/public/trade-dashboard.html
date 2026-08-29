@@ -43,21 +43,19 @@
 
             <div id="user-search-panel" class="search-panel">
                 <label for="user-search">Find a User</label>
-                <input id="user-search" type="search" placeholder="Enter username...">
-
-                <div id="user-results" class="search-results">
-
-                </div>
+                <p class="search-hint">Start typing a username to search for users.</p>
+                <input id="user-search" type="search" placeholder="e.g. JohnUsername">
+                <div id="user-results" class="search-results"></div>
             </div>
 
             <div id="card-search-panel" class="search-panel">
                 <label for="card-search">Find a Card</label>
-                <input id="card-search" type="search" placeholder="Enter card name...">
+                <p class="search-hint">Start typing a card name and/or select a filter to search for tradeable cards.</p>
+                <input id="card-search" type="search" placeholder="e.g. Pikachu">
 
                 <div class="card-filters">
                     <select id="game-filter">
                         <option value="">All Games</option>
-                        <option value="Magic">Magic</option>
                     </select>
 
                     <select id="set-filter">
@@ -65,9 +63,7 @@
                     </select>
                 </div>
 
-                <div id="card-results" class="listing-results">
-
-                </div>
+                <div id="card-results" class="listing-results"></div>
 
                 <div id="listing-paging" class="paging">
                     <button id="previous-page" type="button">Previous</button>

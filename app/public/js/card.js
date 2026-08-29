@@ -72,10 +72,11 @@ if (!cardId) {
             set.append(setLabel, document.createTextNode(` ${card.set_name}`));
 
             let rarity = document.createElement("div");
-            let rarityLabel = document.createElement("strong");
-            rarityLabel.textContent = "Rarity:";
-            rarity.append(rarityLabel, document.createTextNode(` ${card.rarity}`));
-
+            if(card.rarity){
+                let rarityLabel = document.createElement("strong");
+                rarityLabel.textContent = "Rarity:";
+                rarity.append(rarityLabel, document.createTextNode(` ${card.rarity}`));
+            }
             meta.append(game, set, rarity);
 
             let detailsElement = document.createElement("div");

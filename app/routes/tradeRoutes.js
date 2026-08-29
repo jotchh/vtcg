@@ -2,6 +2,33 @@ let express = require("express");
 let router = express.Router();
 
 module.exports = function(pool) {
+    router.get("/filters", async (req, res) => {
+        try {
+            const result = await pool.query(`
+                SELECT DISTINCT cards.game, cards.set_name
+                FROM user_cards
+                JOIN cards ON user_cards.card_id = cards.id
+                WHERE user_cards.is_tradable = TRUE
+                ORDER BY cards.game, cards.set_name;
+            `);
+
+            const games = [...new Set(result.rows.map(row => row.game))];
+
+            const sets = result.rows.map(row => ({
+                game: row.game,
+                set_name: row.set_name
+            }));
+
+            res.json({
+                games,
+                sets
+            });
+        } catch (error) {
+            console.error("Error loading trade filters:", error);
+            res.status(500).send("Error loading trade filters");
+        }
+    });
+
     router.get("/users", (req, res) => {
         let currentUserID = req.user.id;
 
@@ -24,47 +51,90 @@ module.exports = function(pool) {
             });
     });
     
-    router.get("/search-cards", async (req, res) => {
-        let currentUserID = req.user.id;
-        let search = req.query.search;
+router.get("/search-cards", async (req, res) => {
+    let currentUserID = req.user.id;
 
-        if (!search) {
-            return res.json([]);
+    if (!currentUserID) {
+        return res.status(401).json({ error: "Not logged in" });
+    }
+
+    try {
+        let search = req.query.search || "";
+        let game = req.query.game || "";
+        let setName = req.query.set_name || "";
+        let page = parseInt(req.query.page) || 1;
+
+        const pageSize = 20;
+        const offset = (page - 1) * pageSize;
+
+        let conditions = ["uc.user_id != $1", "uc.is_tradable = TRUE"];
+
+        let values = [currentUserID];
+
+        if (search) {
+            conditions.push(`(c.name ILIKE $${values.length + 1} OR c.set_name ILIKE $${values.length + 1})`);
+            values.push(`%${search}%`);
         }
-        
-        try {
-            let result = await pool.query(`
-                SELECT users.id AS user_id,
-                users.username,
-                cards.id AS card_id,
-                cards.name,
-                cards.game,
-                cards.set_name,
-                cards.rarity,
-                cards.img_url,
-                COUNT(user_cards.id) AS tradable_copies
-                FROM user_cards
-                JOIN users ON user_cards.user_id = users.id
-                JOIN cards ON user_cards.card_id = cards.id
-                WHERE user_cards.is_tradable = TRUE
-                AND users.id != $1
-                AND cards.name ILIKE $2
-                GROUP BY
-                users.id,
-                users.username,
-                cards.id,
-                cards.name,
-                cards.game,
-                cards.set_name,
-                cards.rarity,
-                cards.img_url
-                ORDER BY cards.name, users.username;`, [currentUserID, `%${search}%`]);
-                res.json(result.rows);
-            } catch (error) {
-                console.error("Error searching tradable cards:", error);
-                res.status(500).send("Error searching tradable cards");
+
+        if (game) {
+            conditions.push(`c.game = $${values.length + 1}`);
+            values.push(game);
         }
-    });
+
+        if (setName) {
+            conditions.push(`c.set_name = $${values.length + 1}`);
+            values.push(setName);
+        }
+
+        let query = `SELECT c.id, c.name, c.game, c.set_name, c.img_url, u.id AS user_id, u.username,
+            COUNT(*) AS tradable_copies
+            FROM user_cards uc
+            JOIN cards c ON c.id = uc.card_id
+            JOIN users u ON u.id = uc.user_id
+            WHERE ${conditions.join(" AND ")}
+            GROUP BY c.id, c.name, c.game, c.set_name, c.img_url, u.id, u.username
+            ORDER BY c.name, u.username
+            LIMIT $${values.length + 1}
+            OFFSET $${values.length + 2};
+        `;
+
+        values.push(pageSize);
+        values.push(offset);
+
+        let result = await pool.query(query, values);
+
+        let countQuery = `SELECT COUNT(*)
+            FROM (
+                SELECT c.id, u.id
+                FROM user_cards uc
+                JOIN cards c ON c.id = uc.card_id
+                JOIN users u ON u.id = uc.user_id
+                WHERE ${conditions.join(" AND ")}
+                GROUP BY c.id, u.id
+            ) AS results;
+        `;
+
+        let countResult = await pool.query(
+            countQuery,
+            values.slice(0, values.length - 2)
+        );
+
+        let totalCards = parseInt(countResult.rows[0].count);
+        let totalPages = Math.ceil(totalCards / pageSize);
+
+        res.json({
+            cards: result.rows,
+            page: page,
+            totalCards: totalCards,
+            totalPages: totalPages
+        });
+    } catch (error) {
+        console.error("Error searching trade cards:", error);
+        res.status(500).json({
+            error: "Error searching trade cards"
+        });
+    }
+});
 
     router.get("/users/:userID", (req, res) => {
         let userID = req.params.userID;

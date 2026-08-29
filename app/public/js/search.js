@@ -1,4 +1,5 @@
 let submitBtn = document.getElementById("submit");
+let gameSelect = document.getElementById("game-select");
 let tbody = document.getElementById("search-results");
 let queryMessage = document.getElementById("query-message");
 
@@ -11,21 +12,55 @@ let currentPage = 1;
 let totalCards = 0;
 let totalPages = 1;
 
+function loadFilters() {
+    return fetch("/search/filters")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to load filters");
+            }
+
+            return response.json();
+        })
+        .then(data => {
+            gameSelect.replaceChildren();
+
+            let allGamesOption = document.createElement("option");
+            allGamesOption.value = "";
+            allGamesOption.textContent = "All Games";
+            gameSelect.appendChild(allGamesOption);
+
+            for (let game of data.games) {
+                let option = document.createElement("option");
+                option.value = game;
+                option.textContent = game;
+
+                gameSelect.appendChild(option);
+            }
+        })
+        .catch(error => {
+            console.error("Error loading search filters:", error);
+        });
+    }
+
 function loadCards(page = 1) {
     let search = document.getElementById("search").value;
-    let game = document.getElementById("game-select").value;
+    let game = gameSelect.value;
+
     let url = `/search/product?q=${encodeURIComponent(search)}&page=${page}`;
 
     if (game) {
         url += `&game=${encodeURIComponent(game)}`;
+        console.log(url);
     }
 
     setLoading(true);
+
     return fetch(url)
         .then(response => {
             if (!response.ok) {
                 throw new Error("Failed to load cards");
             }
+
             return response.json();
         })
         .then(data => {
@@ -33,10 +68,12 @@ function loadCards(page = 1) {
             currentPage = data.page;
             totalCards = data.total;
             totalPages = data.totalPages;
+
             renderGrid();
         })
         .catch(error => {
             console.error("Error fetching cards:", error);
+
             queryMessage.textContent = "Failed to load cards.";
             renderError();
         })
@@ -46,7 +83,7 @@ function loadCards(page = 1) {
             window.scrollTo({
                 top: 0,
                 behavior: "smooth"
-            });     
+            });
         });
 }
 
@@ -111,14 +148,6 @@ function renderGrid() {
     tbody.replaceChildren();
 
     cards.forEach(card => {
-        let details;
-
-        try {
-            details = card.ext_data;
-        } catch (error) {
-            details = null;
-        }
-
         let cardElement = document.createElement("div");
         cardElement.className = "card";
 
@@ -139,22 +168,24 @@ function renderGrid() {
         let gameLabel = document.createElement("strong");
         gameLabel.textContent = "Game:";
 
-        game.append(gameLabel, document.createTextNode(` ${card.game}`));
+        game.append(
+            gameLabel,
+            document.createTextNode(` ${card.game}`)
+        );
 
         let set = document.createElement("div");
         let setLabel = document.createElement("strong");
         setLabel.textContent = "Set:";
 
-        set.append(setLabel, document.createTextNode(` ${card.set_name}`));
+        set.append(
+            setLabel,
+            document.createTextNode(` ${card.set_name}`)
+        );
 
         meta.append(game, set);
+        cardContent.append(title, meta);
+        cardElement.append(image, cardContent);
 
-        let detailsElement = document.createElement("div");
-        detailsElement.className = "details";
-        
-        cardContent.append(title, meta, detailsElement);
-        cardElement.append(image,cardContent);
-        
         cardElement.addEventListener("click", () => {
             window.location.href = `card.html?id=${card.id}`;
         });
@@ -162,7 +193,8 @@ function renderGrid() {
         tbody.append(cardElement);
     });
 
-    pageInfo.textContent = `Page ${currentPage} of ${totalPages} (${totalCards} cards)`;
+    pageInfo.textContent =
+        `Page ${currentPage} of ${totalPages} (${totalCards} cards)`;
 }
 
 prevBtn.addEventListener("click", () => {
@@ -191,9 +223,11 @@ document.getElementById("search-form").addEventListener("submit", event => {
             }
         })
         .catch(error => {
-            queryMessage.textContent = `ERROR searching for: ${search} - ${error.message}`;
+            queryMessage.textContent =
+                `ERROR searching for: ${search} - ${error.message}`;
+
             console.error("Error searching cards:", error);
         });
 });
 
-loadCards(1);
+loadFilters().then(() => loadCards(1));

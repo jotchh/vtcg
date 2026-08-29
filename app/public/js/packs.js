@@ -330,9 +330,12 @@ scrapConfirmBtn.addEventListener("click", () => {
             }
             return response.json();
         })
-        .then(data => {
+        .then(async data => {
+            statusMessage.textContent = "Opening pack...";
+
+            await animatePackOpening(data.cards, set_name);
+
             statusMessage.textContent = `Scrapped ${scrapCost} cards and pulled ${data.cards.length} new cards!`;
-            renderResults(data.cards);
             scrappableLoaded = false;
             loadScrappable();
             loadPackInfo();
@@ -340,6 +343,9 @@ scrapConfirmBtn.addEventListener("click", () => {
         .catch(error => {
             statusMessage.textContent = `ERROR scrapping for pack: ${error.message}`;
             console.error("Error scrapping for pack:", error);
+
+            packOpening.classList.add("hidden");
+            resultsTable.classList.remove("hidden");
         })
         .finally(() => {
             updateScrapSelectionInfo();

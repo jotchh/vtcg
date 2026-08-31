@@ -3,3 +3,4 @@
 
 # Environment/config files
 env.json
+**/.env
